@@ -7,18 +7,9 @@ public class Bullet : MonoBehaviour
 
     void Awake()
     {
-<<<<<<< HEAD
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // 유니티 물리 엔진이 충돌 시 자동으로 호출함
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        // 이미 안착했다면 중복 실행 방지
-        if (collision.gameObject.CompareTag("Ground"))
-=======
-        rb = rb.GetComponent<Rigidbody2D>();
-    }
 
     // 유니티 물리 엔진이 충돌 시 자동으로 호출함
     private void OnCollisionEnter2D(Collision2D collision)
@@ -27,15 +18,12 @@ public class Bullet : MonoBehaviour
         if (isAnchored) return;
 
         if (collision.gameObject.CompareTag("ground"))
->>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca
         {
             isAnchored = true;
             StopProjectile(collision);
         }
-<<<<<<< HEAD
+
         if (isAnchored) return;
-=======
->>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca
     }
 
     void StopProjectile(Collision2D collision)
@@ -52,9 +40,8 @@ public class Bullet : MonoBehaviour
         
         // 여기에 9주차 과제인 '자원 수집 시작' 함수를 호출하면 됩니다.
     }
-<<<<<<< HEAD
+
 }
 
-=======
-}
->>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca
+
+

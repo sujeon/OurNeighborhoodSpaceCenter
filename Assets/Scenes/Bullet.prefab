@@ -12,7 +12,11 @@ GameObject:
   - component: {fileID: 6322987770404969004}
   - component: {fileID: 5984174726734413322}
   - component: {fileID: 2794403584629425970}
+<<<<<<< HEAD:Assets/Scenes/Bullet.prefab
   - component: {fileID: -3058205729441110321}
+=======
+  - component: {fileID: 6322987770404969004}
+>>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca:Assets/Bullet.prefab
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -130,17 +134,26 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 0
+<<<<<<< HEAD:Assets/Scenes/Bullet.prefab
   m_SleepingMode: 2
   m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &-3058205729441110321
 CircleCollider2D:
+=======
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
+--- !u!114 &6322987770404969004
+MonoBehaviour:
+>>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca:Assets/Bullet.prefab
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7628146307087204329}
   m_Enabled: 1
+<<<<<<< HEAD:Assets/Scenes/Bullet.prefab
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -169,3 +182,9 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+=======
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e1d0cd5269e3d340bea1139cfc40bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bullet
+>>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca:Assets/Bullet.prefab

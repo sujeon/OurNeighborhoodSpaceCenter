@@ -1,7 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using Unity.Cinemachine;
+=======
+using Unity.Cinemachine; // 최신 버전 기준 (에러 시 using Cinemachine; 사용)
+>>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca
 
 public class ProjectileLauncher : MonoBehaviour
 {
@@ -97,9 +101,13 @@ public class ProjectileLauncher : MonoBehaviour
         }
 
         // 카메라가 포탄을 따라가도록 설정
+<<<<<<< HEAD
         if (vcam != null)
         {
              vcam.Follow = bullet.transform;
         }
+=======
+        if (vcam != null) vcam.Follow = bullet.transform;
+>>>>>>> 65be77f67e6fe848173b4d345d5ed5997ed21dca
     }
 }

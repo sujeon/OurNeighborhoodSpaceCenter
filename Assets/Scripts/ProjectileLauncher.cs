@@ -10,16 +10,24 @@ public class ProjectileLauncher : MonoBehaviour
     public Transform firePoint;
     public LineRenderer lineRenderer;
     public Slider powerSlider;
-    public CinemachineCamera vcam; // 포탄 추적용 카메라
+    public CinemachineCamera vcamProjectile; // 포탄 추적용 카메라 (Priority가 낮은 쪽)
+    public CinemachineCamera vcamLauncher;   // 대포 비추는 카메라 (Priority가 높은 쪽)
 
     [Header("발사 설정")]
     public float minPower = 5f;
-    public float maxPower = 30f;
+    public float baseMaxPower = 30f; // 기본 최대 파워
     public float chargeSpeed = 15f;
-    public int stepCount = 50;
+    public float rotationSpeed = 50f; // ★ 누락되었던 회전 속도 변수 추가
+    
+    [Header("궤적 설정")]
+    public int baseStepCount = 50; // 기본 궤적 길이
     public float timeStep = 0.05f;
 
-    private float angle = 45f;
+    [Header("각도 설정")]
+    public float minAngle = 0f;
+    public float maxAngle = 90f;
+    private float currentAngle = 0f;
+    
     private float currentPower;
     private bool isCharging = false;
 
@@ -28,17 +36,19 @@ public class ProjectileLauncher : MonoBehaviour
         if (powerSlider != null)
         {
             powerSlider.minValue = minPower;
-            powerSlider.maxValue = maxPower;
+            // 업그레이드 매니저가 있다면 시작 시 최대값 설정 가능
+            powerSlider.maxValue = baseMaxPower; 
         }
-        lineRenderer.enabled = false; // 시작할 땐 선 숨기기
+        lineRenderer.enabled = false;
     }
 
     void Update()
     {
-        // 1. 각도 조절 (위/아래 화살표)
-        float angleInput = Input.GetAxis("Vertical");
-        angle += angleInput * 50f * Time.deltaTime;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        // 1. 각도 조절 로직
+        float angleInput = Input.GetAxis("Vertical"); 
+        currentAngle += angleInput * rotationSpeed * Time.deltaTime;
+        currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
+        transform.rotation = Quaternion.Euler(0, 0, currentAngle);
 
         // 2. 파워 충전 로직
         HandleCharging();
@@ -56,8 +66,15 @@ public class ProjectileLauncher : MonoBehaviour
         if (isCharging)
         {
             currentPower += chargeSpeed * Time.deltaTime;
-            currentPower = Mathf.Clamp(currentPower, minPower, maxPower);
-            if (powerSlider != null) powerSlider.value = currentPower;
+            
+            // ★ 업그레이드 반영: 대포 사거리(최대 파워) 증가
+            float upgradedMaxPower = baseMaxPower + (UpgradeManager.Instance != null ? UpgradeManager.Instance.rangeLevel * 5f : 0);
+            currentPower = Mathf.Clamp(currentPower, minPower, upgradedMaxPower);
+            
+            if (powerSlider != null) {
+                powerSlider.maxValue = upgradedMaxPower;
+                powerSlider.value = currentPower;
+            }
             DrawTrajectory(currentPower);
         }
 
@@ -74,9 +91,13 @@ public class ProjectileLauncher : MonoBehaviour
         List<Vector3> points = new List<Vector3>();
         Vector2 startingPosition = firePoint.position;
         Vector2 startingVelocity = firePoint.right * power;
+        
+        // ★ 업그레이드 반영: 궤적 예측 장비 (길이 증가)
+        int upgradedStepCount = baseStepCount + (UpgradeManager.Instance != null ? UpgradeManager.Instance.trajectoryLevel * 10 : 0);
+        
         float gravity = Physics2D.gravity.y * projectilePrefab.GetComponent<Rigidbody2D>().gravityScale;
 
-        for (float t = 0; t < stepCount * timeStep; t += timeStep)
+        for (float t = 0; t < upgradedStepCount * timeStep; t += timeStep)
         {
             float x = startingVelocity.x * t;
             float y = startingVelocity.y * t + 0.5f * gravity * t * t;
@@ -93,16 +114,29 @@ public class ProjectileLauncher : MonoBehaviour
         
         if (rb != null)
         {
-            rb.linearVelocity = firePoint.right * power; // 최신 표준 linearVelocity 사용
+            // ★ 업그레이드 반영: 포탄 무게 경량화 (질량 감소)
+            float upgradedMass = 1.0f - (UpgradeManager.Instance != null ? UpgradeManager.Instance.weightLevel * 0.1f : 0);
+            rb.mass = Mathf.Max(upgradedMass, 0.5f); // 최소 무게 제한
+
+            rb.AddForce(firePoint.right * power, ForceMode2D.Impulse);
         }
 
-        // 카메라가 포탄을 따라가도록 설정
-
-        if (vcam != null)
+        // ★ 카메라 시스템 연결
+        if (vcamProjectile != null)
         {
-             vcam.Follow = bullet.transform;
+            vcamProjectile.Follow = bullet.transform;
+            // 포탄 카메라의 우선순위를 높여 화면 전환
+            vcamProjectile.Priority = 20; 
         }
+    }
 
-
+    // 포탄이 안착했을 때 다시 대포를 비추기 위한 함수
+    public void ResetCamera()
+    {
+        if (vcamProjectile != null)
+        {
+            vcamProjectile.Priority = 5; // 점수를 낮춰서 vcamLauncher가 다시 보이게 함
+            vcamProjectile.Follow = null;
+        }
     }
 }

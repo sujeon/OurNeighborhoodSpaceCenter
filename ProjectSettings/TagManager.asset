@@ -4,11 +4,11 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - ground
-  - Physics
-  - Biology
-  - Chemistry
-  - EarthScience
+  - ChemistrySpot
+  - PhysicsSpot
+  - BiologySpot
+  - EarthSpot
+  - Ground
   layers:
   - Default
   - TransparentFX

@@ -9,6 +9,8 @@ TagManager:
   - BiologySpot
   - EarthSpot
   - Ground
+  - Mountain
+  - MountainTop
   layers:
   - Default
   - TransparentFX

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8670254999962798564}
   - component: {fileID: 2811502548949642983}
   - component: {fileID: 8427790102122883169}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DistancePopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}

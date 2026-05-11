@@ -32,6 +32,15 @@ public class ResourceManager : MonoBehaviour
         }
         UpdateUI();
     }
+    public void AddAllResources(int amount)
+    {
+        physicsRes += amount;
+        chemistryRes += amount;
+        biologyRes += amount;
+        earthRes += amount;
+        UpdateUI();
+        Debug.Log($"보너스 구역 안착! 모든 자원 +{amount}");
+    }
 
     void UpdateUI()
     {

@@ -109,33 +109,41 @@ public class ProjectileLauncher : MonoBehaviour
 
     void Launch(float power)
     {
+        // 1. 포탄 생성
         GameObject bullet = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         
         if (rb != null)
         {
-            // ★ 업그레이드 반영: 포탄 무게 경량화 (질량 감소)
+            // 업그레이드 반영: 포탄 무게 경량화 (질량 감소)
             float upgradedMass = 1.0f - (UpgradeManager.Instance != null ? UpgradeManager.Instance.weightLevel * 0.1f : 0);
-            rb.mass = Mathf.Max(upgradedMass, 0.5f); // 최소 무게 제한
+            rb.mass = Mathf.Max(upgradedMass, 0.5f); 
 
+            // 질량(Mass)의 영향을 받는 발사 방식 (AddForce + Impulse)
             rb.AddForce(firePoint.right * power, ForceMode2D.Impulse);
         }
 
-        // ★ 카메라 시스템 연결
+        // 2. [카메라 전환] 포탄 추적 시작
         if (vcamProjectile != null)
         {
-            vcamProjectile.Follow = bullet.transform;
-            // 포탄 카메라의 우선순위를 높여 화면 전환
+            vcamProjectile.Follow = bullet.transform; // 생성된 포탄을 타겟으로 설정
+            
+            // 포탄 카메라의 우선순위를 런처 카메라(10)보다 높게 설정 (20)
+            // 이 순간 화면이 포탄으로 부드럽게 넘어갑니다.
             vcamProjectile.Priority = 20; 
         }
     }
 
-    // 포탄이 안착했을 때 다시 대포를 비추기 위한 함수
+    // 포탄이 안착하거나 삭제되었을 때 (Bullet.cs의 코루틴에서 호출됨)
     public void ResetCamera()
     {
         if (vcamProjectile != null)
         {
-            vcamProjectile.Priority = 5; // 점수를 낮춰서 vcamLauncher가 다시 보이게 함
+            // 3. [카메라 복귀] 포탄 카메라의 우선순위를 다시 낮춤 (5)
+            // 그러면 우선순위가 더 높은 vcamLauncher(10)가 다시 메인 화면이 됩니다.
+            vcamProjectile.Priority = 5;
+            
+            // 다음 발사를 위해 타겟 해제
             vcamProjectile.Follow = null;
         }
     }

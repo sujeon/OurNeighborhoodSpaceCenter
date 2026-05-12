@@ -50,7 +50,6 @@ public class ProjectileLauncher : MonoBehaviour
         currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
         transform.rotation = Quaternion.Euler(0, 0, currentAngle);
 
-        // 2. 파워 충전 로직
         HandleCharging();
     }
 

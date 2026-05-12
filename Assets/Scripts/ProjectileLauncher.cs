@@ -3,24 +3,26 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 
-public class ProjectileLauncher : MonoBehaviour
+    public class ProjectileLauncher : MonoBehaviour
 {
     [Header("참조 객체")]
     public GameObject projectilePrefab;
     public Transform firePoint;
     public LineRenderer lineRenderer;
     public Slider powerSlider;
-    public CinemachineCamera vcamProjectile; // 포탄 추적용 카메라 (Priority가 낮은 쪽)
-    public CinemachineCamera vcamLauncher;   // 대포 비추는 카메라 (Priority가 높은 쪽)
+    public CinemachineCamera vcamProjectile; 
+    public CinemachineCamera vcamLauncher;   
 
     [Header("발사 설정")]
     public float minPower = 5f;
-    public float baseMaxPower = 30f; // 기본 최대 파워
+    // ★ UpgradeManager에서 직접 수정할 수 있도록 public으로 둡니다.
+    public float maxForce = 30f; 
     public float chargeSpeed = 15f;
-    public float rotationSpeed = 50f; // ★ 누락되었던 회전 속도 변수 추가
+    public float rotationSpeed = 50f; 
     
     [Header("궤적 설정")]
-    public int baseStepCount = 50; // 기본 궤적 길이
+    // ★ UpgradeManager에서 직접 수정할 수 있도록 public으로 둡니다.
+    public int trajectoryStepCount = 50; 
     public float timeStep = 0.05f;
 
     [Header("각도 설정")]
@@ -33,20 +35,21 @@ public class ProjectileLauncher : MonoBehaviour
 
     void Start()
     {
+        // 초기값 설정
         if (powerSlider != null)
         {
             powerSlider.minValue = minPower;
-            // 업그레이드 매니저가 있다면 시작 시 최대값 설정 가능
-            powerSlider.maxValue = baseMaxPower; 
+            powerSlider.maxValue = maxForce; 
         }
         lineRenderer.enabled = false;
     }
 
     void Update()
     {
-       if (Time.timeScale == 0) return;
+        // 연구소 UI가 열려있을 때(Time.timeScale == 0) 입력 차단
+        if (Time.timeScale == 0) return;
 
-        // --- 아래는 기존 코드 ---
+        // 각도 조절
         float angleInput = Input.GetAxis("Vertical"); 
         currentAngle += angleInput * rotationSpeed * Time.deltaTime;
         currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
@@ -68,12 +71,11 @@ public class ProjectileLauncher : MonoBehaviour
         {
             currentPower += chargeSpeed * Time.deltaTime;
             
-            // ★ 업그레이드 반영: 대포 사거리(최대 파워) 증가
-            float upgradedMaxPower = baseMaxPower + (UpgradeManager.Instance != null ? UpgradeManager.Instance.rangeLevel * 5f : 0);
-            currentPower = Mathf.Clamp(currentPower, minPower, upgradedMaxPower);
+            // ★ 업그레이드 반영: UpgradeManager에 설정된 실시간 maxForce 사용
+            currentPower = Mathf.Clamp(currentPower, minPower, maxForce);
             
             if (powerSlider != null) {
-                powerSlider.maxValue = upgradedMaxPower;
+                powerSlider.maxValue = maxForce; // 강화로 늘어난 최대치 반영
                 powerSlider.value = currentPower;
             }
             DrawTrajectory(currentPower);
@@ -93,12 +95,10 @@ public class ProjectileLauncher : MonoBehaviour
         Vector2 startingPosition = firePoint.position;
         Vector2 startingVelocity = firePoint.right * power;
         
-        // ★ 업그레이드 반영: 궤적 예측 장비 (길이 증가)
-        int upgradedStepCount = baseStepCount + (UpgradeManager.Instance != null ? UpgradeManager.Instance.trajectoryLevel * 10 : 0);
-        
+        // ★ 업그레이드 반영: 강화된 궤적 점 개수(trajectoryStepCount) 사용
         float gravity = Physics2D.gravity.y * projectilePrefab.GetComponent<Rigidbody2D>().gravityScale;
 
-        for (float t = 0; t < upgradedStepCount * timeStep; t += timeStep)
+        for (float t = 0; t < trajectoryStepCount * timeStep; t += timeStep)
         {
             float x = startingVelocity.x * t;
             float y = startingVelocity.y * t + 0.5f * gravity * t * t;
@@ -116,35 +116,26 @@ public class ProjectileLauncher : MonoBehaviour
         
         if (rb != null)
         {
-            // 업그레이드 반영: 포탄 무게 경량화 (질량 감소)
-            float upgradedMass = 1.0f - (UpgradeManager.Instance != null ? UpgradeManager.Instance.weightLevel * 0.1f : 0);
-            rb.mass = Mathf.Max(upgradedMass, 0.5f); 
+            // ★ 업그레이드 반영: UpgradeManager에 저장된 전역 static 무게값 적용
+            rb.mass = UpgradeManager.ProjectileMass; 
 
-            // 질량(Mass)의 영향을 받는 발사 방식 (AddForce + Impulse)
+            // 발사!
             rb.AddForce(firePoint.right * power, ForceMode2D.Impulse);
         }
 
-        // 2. [카메라 전환] 포탄 추적 시작
+        // 2. 카메라 전환
         if (vcamProjectile != null)
         {
-            vcamProjectile.Follow = bullet.transform; // 생성된 포탄을 타겟으로 설정
-            
-            // 포탄 카메라의 우선순위를 런처 카메라(10)보다 높게 설정 (20)
-            // 이 순간 화면이 포탄으로 부드럽게 넘어갑니다.
+            vcamProjectile.Follow = bullet.transform;
             vcamProjectile.Priority = 20; 
         }
     }
 
-    // 포탄이 안착하거나 삭제되었을 때 (Bullet.cs의 코루틴에서 호출됨)
     public void ResetCamera()
     {
         if (vcamProjectile != null)
         {
-            // 3. [카메라 복귀] 포탄 카메라의 우선순위를 다시 낮춤 (5)
-            // 그러면 우선순위가 더 높은 vcamLauncher(10)가 다시 메인 화면이 됩니다.
             vcamProjectile.Priority = 5;
-            
-            // 다음 발사를 위해 타겟 해제
             vcamProjectile.Follow = null;
         }
     }

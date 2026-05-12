@@ -42,7 +42,7 @@ public class ResourceManager : MonoBehaviour
         Debug.Log($"보너스 구역 안착! 모든 자원 +{amount}");
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         resText.text = $"물리:{physicsRes} 화학:{chemistryRes} 생물:{biologyRes} 지구:{earthRes}";
     }

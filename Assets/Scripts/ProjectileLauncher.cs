@@ -44,7 +44,9 @@ public class ProjectileLauncher : MonoBehaviour
 
     void Update()
     {
-        // 1. 각도 조절 로직
+       if (Time.timeScale == 0) return;
+
+        // --- 아래는 기존 코드 ---
         float angleInput = Input.GetAxis("Vertical"); 
         currentAngle += angleInput * rotationSpeed * Time.deltaTime;
         currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);

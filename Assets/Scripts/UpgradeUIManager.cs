@@ -21,23 +21,26 @@ public class UpgradeUIManager : MonoBehaviour
         }
     }       
 
-    // ★ 이 함수를 연구소 버튼에 연결하세요.
     public void ToggleUpgradeUI()
     {
-        if (researchPanel == null || resourceHUD == null) return;
+    if (researchPanel == null) return;
 
-        // 현재 상태의 반대를 설정 (켜져있으면 false, 꺼져있으면 true)
-        bool isActive = !researchPanel.activeSelf;
+    bool isActive = !researchPanel.activeSelf;
+    researchPanel.SetActive(isActive);
 
-        researchPanel.SetActive(isActive);
-        
-        // 자원 HUD는 연구소 창과 반대로 작동하게 함
-        // (단, 버튼이 HUD 안에 있다면 HUD는 계속 켜두는 것이 좋습니다 - 아래 주의사항 참고)
-        resourceHUD.SetActive(!isActive);
+    // ★ 이 부분을 확인하세요! 
+    // HUD를 패널 상태의 반대(!isActive)로 설정하고 있다면, 이 줄을 지우거나 주석 처리하세요.
+    // if (resourceHUD != null) resourceHUD.SetActive(!isActive); 
 
-        // 시간 정지/재개 조절
-        Time.timeScale = isActive ? 0f : 1f;
+    // 연구소 안에서도 자원을 봐야 하므로 항상 켜져 있도록 강제합니다.
+    if (resourceHUD != null) resourceHUD.SetActive(true);
 
-        Debug.Log(isActive ? "연구소 입장" : "필드로 복귀");
+    if (isActive && UpgradeManager.Instance != null)
+    {
+        UpgradeManager.Instance.UpdateUpgradeUI();
+    }
+
+    // 시간 및 커서 설정...
+    Time.timeScale = isActive ? 0f : 1f;
     }
 }

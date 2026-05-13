@@ -1,49 +1,64 @@
 using UnityEngine;
-using TMPro; // 텍스트 UI를 쓰기 위해 필요합니다.
+using TMPro; // TextMeshPro 사용을 위해 필수
 
 public class ResourceManager : MonoBehaviour
 {
-    // 어디서든 접근할 수 있게 싱글톤으로 만듭니다.
+    // 다른 스크립트에서 접근할 수 있도록 싱글톤 설정
     public static ResourceManager Instance;
 
-    [Header("자원 데이터")]
-    public int physicsRes = 0;   // 물리 (산스장)
-    public int chemistryRes = 0; // 화학 (붕어빵)
-    public int biologyRes = 0;   // 생물 (약수터)
-    public int earthRes = 0;     // 지구과학 (솟대)
+    [Header("자원 수치")]
+    public int physicsRes = 0;
+    public int chemistryRes = 0;
+    public int biologyRes = 0;
+    public int earthRes = 0;
 
-    [Header("UI 연결")]
-    public TextMeshProUGUI resText; // 화면에 자원을 표시할 텍스트
+    [Header("UI 개별 텍스트 연결 (TMP)")]
+    public TextMeshProUGUI physicsText;
+    public TextMeshProUGUI chemistryText;
+    public TextMeshProUGUI biologyText;
+    public TextMeshProUGUI earthText;
 
     void Awake()
     {
-        Instance = this;
+        // 씬에 리소스 매니저가 하나만 존재하도록 보장
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    // 자원을 추가하는 함수
+    void Start()
+    {
+        UpdateUI(); // 시작 시 0점으로 초기화 표시
+    }
+
+    // [함수 1] 특정 한 종류의 자원만 추가할 때 (일반 연구소 안착 시)
     public void AddResource(string type, int amount)
     {
-        switch (type)
-        {
-            case "Physics": physicsRes += amount; break;
-            case "Chemistry": chemistryRes += amount; break;
-            case "Biology": biologyRes += amount; break;
-            case "Earth": earthRes += amount; break;
-        }
+        if (type.Contains("Physics")) physicsRes += amount;
+        else if (type.Contains("Chemistry")) chemistryRes += amount;
+        else if (type.Contains("Biology")) biologyRes += amount;
+        else if (type.Contains("Earth")) earthRes += amount;
+
         UpdateUI();
     }
+
+    // ★ [함수 2] 모든 자원을 동시에 추가할 때 (산 꼭대기 안착 시)
     public void AddAllResources(int amount)
     {
         physicsRes += amount;
         chemistryRes += amount;
         biologyRes += amount;
         earthRes += amount;
+
+        Debug.Log($"<color=yellow>산 꼭대기 정복! 모든 자원 +{amount} 획득!</color>");
         UpdateUI();
-        Debug.Log($"보너스 구역 안착! 모든 자원 +{amount}");
     }
 
+    // UI 텍스트를 실시간 데이터로 갱신
     public void UpdateUI()
     {
-        resText.text = $"물리:{physicsRes} 화학:{chemistryRes} 생물:{biologyRes} 지구:{earthRes}";
+        if (physicsText != null) physicsText.text = physicsRes.ToString();
+        if (chemistryText != null) chemistryText.text = chemistryRes.ToString();
+        if (biologyText != null) biologyText.text = biologyRes.ToString();
+        if (earthText != null) earthText.text = earthRes.ToString();
     }
 }

@@ -11,7 +11,8 @@ using Unity.Cinemachine;
     public LineRenderer lineRenderer;
     public Slider powerSlider;
     public CinemachineCamera vcamProjectile; 
-    public CinemachineCamera vcamLauncher;   
+    public CinemachineCamera vcamLauncher;  
+    public CinemachineBrain camBrain; // ★ 메인 카메라의 Cinemachine Brain을 드래그해서 넣으세요.
 
     [Header("발사 설정")]
     public float minPower = 5f;
@@ -48,6 +49,7 @@ using Unity.Cinemachine;
     {
         // 연구소 UI가 열려있을 때(Time.timeScale == 0) 입력 차단
         if (Time.timeScale == 0) return;
+        if (IsCameraMoving()) return;
 
         // 각도 조절
         float angleInput = Input.GetAxis("Vertical"); 
@@ -112,7 +114,12 @@ using Unity.Cinemachine;
     {
         // 1. 포탄 생성
         GameObject bullet = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+        if (bulletScript != null)
+        {
+        bulletScript.launcher = this; 
+        }
         
         if (rb != null)
         {
@@ -138,5 +145,13 @@ using Unity.Cinemachine;
             vcamProjectile.Priority = 5;
             vcamProjectile.Follow = null;
         }
+    }
+    bool IsCameraMoving()
+    {
+        if (camBrain == null) return false;
+
+        // 카메라가 현재 섞이고(Blending) 있다면 true 반환
+        // 혹은 현재 활성화된 카메라가 대포 카메라(vcamLauncher)가 아니어도 true 반환
+        return camBrain.IsBlending || (camBrain.ActiveVirtualCamera as CinemachineCamera != vcamLauncher);
     }
 }

@@ -1765,7 +1765,7 @@ GameObject:
   - component: {fileID: 715289706}
   - component: {fileID: 715289705}
   - component: {fileID: 715289708}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -3182,15 +3182,18 @@ MonoBehaviour:
   firePoint: {fileID: 1830024127}
   lineRenderer: {fileID: 836771347}
   powerSlider: {fileID: 711830610}
+  camBrain: {fileID: 519420033}
   vcamProjectile: {fileID: 917078172}
   vcamLauncher: {fileID: 1447064434}
-  camBrain: {fileID: 519420033}
   minPower: 1
   maxForce: 10
   chargeSpeed: 3
   rotationSpeed: 50
   trajectoryStepCount: 10
   timeStep: 0.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
   minAngle: 0
   maxAngle: 90
 --- !u!212 &1231319317

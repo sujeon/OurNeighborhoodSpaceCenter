@@ -1,16 +1,23 @@
 using UnityEngine;
-using TMPro; // TextMeshPro 사용을 위해 필수
+using TMPro;
+
+public enum ResourceType
+{
+    Physics,
+    Chemistry,
+    Biology,
+    Earth
+}
 
 public class ResourceManager : MonoBehaviour
 {
-    // 다른 스크립트에서 접근할 수 있도록 싱글톤 설정
-    public static ResourceManager Instance;
+    public static ResourceManager Instance { get; private set; }
 
     [Header("자원 수치")]
-    public int physicsRes = 0;
-    public int chemistryRes = 0;
-    public int biologyRes = 0;
-    public int earthRes = 0;
+    public int physicsRes;
+    public int chemistryRes;
+    public int biologyRes;
+    public int earthRes;
 
     [Header("UI 개별 텍스트 연결 (TMP)")]
     public TextMeshProUGUI physicsText;
@@ -18,30 +25,86 @@ public class ResourceManager : MonoBehaviour
     public TextMeshProUGUI biologyText;
     public TextMeshProUGUI earthText;
 
-    void Awake()
+    private void Awake()
     {
-        // 씬에 리소스 매니저가 하나만 존재하도록 보장
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
     }
 
-    void Start()
+    private void Start()
     {
-        UpdateUI(); // 시작 시 0점으로 초기화 표시
-    }
-
-    // [함수 1] 특정 한 종류의 자원만 추가할 때 (일반 연구소 안착 시)
-    public void AddResource(string type, int amount)
-    {
-        if (type.Contains("Physics")) physicsRes += amount;
-        else if (type.Contains("Chemistry")) chemistryRes += amount;
-        else if (type.Contains("Biology")) biologyRes += amount;
-        else if (type.Contains("Earth")) earthRes += amount;
-
         UpdateUI();
     }
 
-    // ★ [함수 2] 모든 자원을 동시에 추가할 때 (산 꼭대기 안착 시)
+    public bool CanSpend(ResourceType type, int amount)
+    {
+        return GetResource(type) >= amount;
+    }
+
+    public bool Spend(ResourceType type, int amount)
+    {
+        if (!CanSpend(type, amount)) return false;
+
+        AddResource(type, -amount, false);
+        return true;
+    }
+
+    public bool SpendPair(ResourceType firstType, int firstAmount, ResourceType secondType, int secondAmount)
+    {
+        if (!CanSpend(firstType, firstAmount) || !CanSpend(secondType, secondAmount)) return false;
+
+        AddResource(firstType, -firstAmount, false);
+        AddResource(secondType, -secondAmount, false);
+        UpdateUI();
+        return true;
+    }
+
+    public bool SpendAllTypes(int amount)
+    {
+        if (physicsRes < amount || chemistryRes < amount || biologyRes < amount || earthRes < amount)
+        {
+            return false;
+        }
+
+        physicsRes -= amount;
+        chemistryRes -= amount;
+        biologyRes -= amount;
+        earthRes -= amount;
+        UpdateUI();
+        return true;
+    }
+
+    public void AddResource(ResourceType type, int amount, bool updateUI = true)
+    {
+        switch (type)
+        {
+            case ResourceType.Physics:
+                physicsRes = Mathf.Max(0, physicsRes + amount);
+                break;
+            case ResourceType.Chemistry:
+                chemistryRes = Mathf.Max(0, chemistryRes + amount);
+                break;
+            case ResourceType.Biology:
+                biologyRes = Mathf.Max(0, biologyRes + amount);
+                break;
+            case ResourceType.Earth:
+                earthRes = Mathf.Max(0, earthRes + amount);
+                break;
+        }
+
+        if (updateUI) UpdateUI();
+    }
+
+    public void AddResource(string type, int amount)
+    {
+        AddResource(StringToResourceType(type), amount);
+    }
+
     public void AddAllResources(int amount)
     {
         physicsRes += amount;
@@ -53,12 +116,38 @@ public class ResourceManager : MonoBehaviour
         UpdateUI();
     }
 
-    // UI 텍스트를 실시간 데이터로 갱신
+    public int GetResource(ResourceType type)
+    {
+        switch (type)
+        {
+            case ResourceType.Physics: return physicsRes;
+            case ResourceType.Chemistry: return chemistryRes;
+            case ResourceType.Biology: return biologyRes;
+            case ResourceType.Earth: return earthRes;
+            default: return 0;
+        }
+    }
+
     public void UpdateUI()
     {
         if (physicsText != null) physicsText.text = physicsRes.ToString();
         if (chemistryText != null) chemistryText.text = chemistryRes.ToString();
         if (biologyText != null) biologyText.text = biologyRes.ToString();
         if (earthText != null) earthText.text = earthRes.ToString();
+    }
+
+    public static ResourceType StringToResourceType(string type)
+    {
+        if (string.IsNullOrEmpty(type)) return ResourceType.Physics;
+
+        if (type.Contains("Chemistry")) return ResourceType.Chemistry;
+        if (type.Contains("Biology")) return ResourceType.Biology;
+        if (type.Contains("Earth")) return ResourceType.Earth;
+        return ResourceType.Physics;
+    }
+
+    public static ResourceType TagToResourceType(string tag)
+    {
+        return StringToResourceType(tag.Replace("Spot", string.Empty));
     }
 }

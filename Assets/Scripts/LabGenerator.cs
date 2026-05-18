@@ -3,35 +3,52 @@ using System.Collections;
 
 public class LabGenerator : MonoBehaviour
 {
-    public string resourceType; 
-    public float productionInterval = 5f; 
-    private bool isActivated = false; // 현재 연구소가 가동 중인지 체크하는 변수
+    public ResourceType resourceType = ResourceType.Physics;
+    public float baseProductionInterval = 5f;
+    public int productionAmount = 1;
 
-    // 연구소 가동 시도 (성공하면 true, 이미 가동 중이면 false 반환)
-    public bool ActivateLab() 
+    private bool isActivated;
+    private Coroutine produceCoroutine;
+
+    public bool ActivateLab()
     {
-        if (isActivated) 
+        if (isActivated)
         {
             Debug.Log($"{resourceType} 연구소는 이미 가동 중입니다!");
-            return false; // 이미 가동 중이므로 실패 반환
+            return false;
         }
-        
+
         isActivated = true;
-        StartCoroutine(ProduceRoutine());
+        produceCoroutine = StartCoroutine(ProduceRoutine());
         Debug.Log($"{resourceType} 연구소 가동 시작!");
-        return true; // 새로 가동했으므로 성공 반환
+        return true;
     }
 
-    IEnumerator ProduceRoutine()
+    private IEnumerator ProduceRoutine()
     {
-        while (true)
+        while (isActivated)
         {
-            yield return new WaitForSeconds(productionInterval);
-            
+            float multiplier = UpgradeManager.Instance != null 
+                ? UpgradeManager.Instance.BioSpeedMultiplier 
+                : 1f;
+
+            float interval = Mathf.Max(0.25f, baseProductionInterval * multiplier);
+
+            yield return new WaitForSeconds(interval);
+
             if (ResourceManager.Instance != null)
             {
-                ResourceManager.Instance.AddResource(resourceType, 1);
+                ResourceManager.Instance.AddResource(resourceType, productionAmount);
             }
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (produceCoroutine != null)
+        {
+            StopCoroutine(produceCoroutine);
+            produceCoroutine = null;
         }
     }
 }

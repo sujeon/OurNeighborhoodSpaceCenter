@@ -211,6 +211,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
   launcher: {fileID: 1231319316}
   resManager: {fileID: 1144122782}
+  projectileGravityScale: 1
+  bioSpeedMultiplier: 1
   rangeLevel: 1
   powerCostPhys: 10
   powerCostEarth: 5
@@ -463,6 +465,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a8202d5f0e3321645b8f7ccce4c6f5e6, type: 3}
     - target: {fileID: 6334651515988734251, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -552,6 +558,54 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+--- !u!1 &204411462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 204411464}
+  - component: {fileID: 204411463}
+  m_Layer: 0
+  m_Name: StageGravityManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &204411463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204411462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93364d4fb660ab647bf8ee33fb0504c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageGravityManager
+  preset: 0
+  customGravityY: -9.8
+  gravityMultiplier: 1
+  applyOnStart: 1
+--- !u!4 &204411464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204411462}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.27061, y: -4.293, z: 0.45}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &303011290
 GameObject:
   m_ObjectHideFlags: 0
@@ -1039,6 +1093,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BackgroundScroller
   scrollSpeed: 0.1
+  followCameraX: 1
 --- !u!64 &476017880
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1355,6 +1410,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Earth
       objectReference: {fileID: 0}
+    - target: {fileID: 4673304084525704941, guid: c923d0e953f191d429bfb7c0ea493ba0, type: 3}
+      propertyPath: resourceType
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1475,6 +1534,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeUIManager
   researchPanel: {fileID: 1671447315}
   resourceHUD: {fileID: 751844793}
+  pauseGameWhenOpen: 1
+  keepResourceHudVisible: 1
 --- !u!4 &624931263
 Transform:
   m_ObjectHideFlags: 0
@@ -1542,6 +1603,10 @@ PrefabInstance:
     - target: {fileID: 1814095961334297681, guid: c923d0e953f191d429bfb7c0ea493ba0, type: 3}
       propertyPath: m_Name
       value: Earth (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4673304084525704941, guid: c923d0e953f191d429bfb7c0ea493ba0, type: 3}
+      propertyPath: resourceType
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2639,6 +2704,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3208427230273765643, guid: a78c9063795299646b9d7ca4b37c3953, type: 3}
+      propertyPath: resourceType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3189,6 +3258,9 @@ MonoBehaviour:
   maxForce: 10
   chargeSpeed: 3
   rotationSpeed: 50
+  fireKey: 32
+  projectileGravityScale: 1
+  moonSceneName: MoonStage
   trajectoryStepCount: 10
   timeStep: 0.1
   groundLayer:
@@ -3196,6 +3268,7 @@ MonoBehaviour:
     m_Bits: 64
   minAngle: 0
   maxAngle: 90
+  currentAngle: 0
 --- !u!212 &1231319317
 SpriteRenderer:
   serializedVersion: 2
@@ -3809,8 +3882,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 798e654270f72b7409d2e2423ce46c50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LabGenerator
-  resourceType: Chemistry
-  productionInterval: 5
+  resourceType: 1
+  baseProductionInterval: 5
+  productionAmount: 1
 --- !u!1 &1435389504
 GameObject:
   m_ObjectHideFlags: 0
@@ -4092,6 +4166,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6ac1fbef486d1484fbb13f85e3d46a26, type: 3}
     - target: {fileID: 6334651515988734251, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4236,6 +4314,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5f8ca97a5de6cfa4abe7523fcb2d53c7, type: 3}
     - target: {fileID: 6334651515988734251, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4882,6 +4964,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8174943897753085333, guid: 0ac46e52f624470418e320f0129614b0, type: 3}
+      propertyPath: resourceType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3939708655302231, guid: 0ac46e52f624470418e320f0129614b0, type: 3}
       propertyPath: m_Name
       value: Biology
@@ -4943,6 +5029,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8174943897753085333, guid: 0ac46e52f624470418e320f0129614b0, type: 3}
+      propertyPath: resourceType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3939708655302231, guid: 0ac46e52f624470418e320f0129614b0, type: 3}
       propertyPath: m_Name
       value: Biology (1)
@@ -5153,6 +5243,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 90804eae7b2339b498cc2b037228261f, type: 3}
     - target: {fileID: 6334651515988734251, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5291,6 +5385,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4d49da99f460521468f0806efd27de2e, type: 3}
     - target: {fileID: 6334651515988734251, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5428,6 +5526,22 @@ PrefabInstance:
     - target: {fileID: 4446909322167987688, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 431df079212aa09479b213d57ec2786b, type: 3}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260473237026659289, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6334651515988734251, guid: 2b778c8eef46f6d4c9a199a3a941e064, type: 3}
       propertyPath: m_Pivot.x
@@ -5645,3 +5759,4 @@ SceneRoots:
   - {fileID: 652230817}
   - {fileID: 856897165}
   - {fileID: 1933533285}
+  - {fileID: 204411464}

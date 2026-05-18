@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine.SceneManagement;
 
@@ -11,145 +10,236 @@ public class ProjectileLauncher : MonoBehaviour
     public Transform firePoint;
     public LineRenderer lineRenderer;
     public Slider powerSlider;
-    public CinemachineBrain camBrain;      
-    public CinemachineCamera vcamProjectile; 
-    public CinemachineCamera vcamLauncher;   
+    public CinemachineBrain camBrain;
+    public CinemachineCamera vcamProjectile;
+    public CinemachineCamera vcamLauncher;
 
     [Header("발사 설정")]
     public float minPower = 5f;
-    public float maxForce = 30f; 
+    public float maxForce = 30f;
     public float chargeSpeed = 15f;
-    public float rotationSpeed = 50f; 
-    
+    public float rotationSpeed = 50f;
+    public KeyCode fireKey = KeyCode.Space;
+
+    [Header("중력 / 탄도 설정")]
+    [Tooltip("발사체가 받는 기본 중력 배율입니다. 스테이지 중력값 * 이 값 * 업그레이드 중력 배율로 계산됩니다.")]
+    public float projectileGravityScale = 1f;
+    [Tooltip("달 해금 후, 거의 수직 + 최대 파워 발사 시 MoonStage로 이동")]
+    public string moonSceneName = "MoonStage";
+
     [Header("궤적 설정")]
-    public int trajectoryStepCount = 50; 
-    public float timeStep = 0.05f;
-    public LayerMask groundLayer; 
+    [Range(10, 200)] public int trajectoryStepCount = 50;
+    [Range(0.02f, 0.2f)] public float timeStep = 0.05f;
+    public LayerMask groundLayer;
 
     [Header("각도 설정")]
     public float minAngle = 0f;
     public float maxAngle = 90f;
-    private float currentAngle = 0f;
-    
-    private float currentPower;
-    private bool isCharging = false;
+    [SerializeField] private float currentAngle = 0f;
 
-    void Start()
+    private float currentPower;
+    private bool isCharging;
+    private Rigidbody2D projectileRbTemplate;
+    private readonly Vector3[] trajectoryPoints = new Vector3[200];
+
+    private void Awake()
     {
-        if (powerSlider != null)
-        {
-            powerSlider.minValue = minPower;
-            powerSlider.maxValue = maxForce; 
-        }
-        lineRenderer.enabled = false;
+        CacheProjectileTemplate();
     }
 
-    void Update()
+    private void Start()
     {
-        if (Time.timeScale == 0) return;
-        if (IsCameraMoving()) return;
+        SetupSlider();
+        SetLineVisible(false);
+    }
 
-        float angleInput = Input.GetAxis("Vertical"); 
-        currentAngle += angleInput * rotationSpeed * Time.deltaTime;
-        currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
-        transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+    private void Update()
+    {
+        if (Time.timeScale == 0f || IsCameraMoving()) return;
 
+        RotateLauncher();
         HandleCharging();
     }
 
-   bool IsCameraMoving()
+    private void CacheProjectileTemplate()
     {
-    if (camBrain == null) return false;
-    var activeCam = camBrain.ActiveVirtualCamera;
-    return camBrain.IsBlending || (activeCam != (ICinemachineCamera)vcamLauncher);
+        if (projectilePrefab != null)
+        {
+            projectileRbTemplate = projectilePrefab.GetComponent<Rigidbody2D>();
+        }
     }
 
-    void HandleCharging()
+    private void SetupSlider()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (powerSlider == null) return;
+
+        powerSlider.minValue = minPower;
+        powerSlider.maxValue = maxForce;
+        powerSlider.value = minPower;
+    }
+
+    private void RotateLauncher()
+    {
+        float angleInput = Input.GetAxisRaw("Vertical");
+        if (Mathf.Approximately(angleInput, 0f)) return;
+
+        currentAngle += angleInput * rotationSpeed * Time.deltaTime;
+        currentAngle = Mathf.Clamp(currentAngle, minAngle, maxAngle);
+        transform.rotation = Quaternion.Euler(0f, 0f, currentAngle);
+    }
+
+    private bool IsCameraMoving()
+    {
+        if (camBrain == null || vcamLauncher == null) return false;
+
+        var activeCam = camBrain.ActiveVirtualCamera;
+        return camBrain.IsBlending || activeCam != (ICinemachineCamera)vcamLauncher;
+    }
+
+    private void HandleCharging()
+    {
+        if (Input.GetKeyDown(fireKey))
         {
-            isCharging = true;
-            currentPower = minPower;
-            lineRenderer.enabled = true;
+            StartCharging();
         }
 
         if (isCharging)
         {
-            currentPower += chargeSpeed * Time.deltaTime;
-            currentPower = Mathf.Clamp(currentPower, minPower, maxForce);
-            
-            if (powerSlider != null) {
-                powerSlider.maxValue = maxForce;
-                powerSlider.value = currentPower;
-            }
+            ChargePower();
             DrawTrajectory(currentPower);
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(fireKey) && isCharging)
         {
-            Launch(currentPower);
-            isCharging = false;
-            lineRenderer.enabled = false;
+            FireChargedProjectile();
         }
     }
 
-    void DrawTrajectory(float power)
+    private void StartCharging()
     {
-        List<Vector3> points = new List<Vector3>();
-        Vector2 startingPosition = firePoint.position;
-        Vector2 startingVelocity = firePoint.right * power;
-        float gravity = Physics2D.gravity.y * projectilePrefab.GetComponent<Rigidbody2D>().gravityScale;
+        isCharging = true;
+        currentPower = minPower;
+        SetLineVisible(true);
+        UpdatePowerSlider();
+    }
 
-        Vector2 previousPosition = startingPosition;
-        points.Add(startingPosition);
+    private void ChargePower()
+    {
+        currentPower = Mathf.Clamp(currentPower + chargeSpeed * Time.deltaTime, minPower, maxForce);
+        UpdatePowerSlider();
+    }
 
-        for (int i = 1; i < trajectoryStepCount; i++) 
+    private void FireChargedProjectile()
+    {
+        Launch(currentPower);
+        isCharging = false;
+        SetLineVisible(false);
+    }
+
+    private void UpdatePowerSlider()
+    {
+        if (powerSlider == null) return;
+
+        powerSlider.maxValue = maxForce;
+        powerSlider.value = currentPower;
+    }
+
+    private void SetLineVisible(bool visible)
+    {
+        if (lineRenderer != null)
+        {
+            lineRenderer.enabled = visible;
+        }
+    }
+
+    private float GetEffectiveGravityScale()
+    {
+        float upgradeGravityScale = UpgradeManager.Instance != null 
+            ? UpgradeManager.Instance.ProjectileGravityScale 
+            : 1f;
+
+        return Mathf.Max(0.05f, projectileGravityScale * upgradeGravityScale);
+    }
+
+    private void DrawTrajectory(float power)
+    {
+        if (lineRenderer == null || firePoint == null) return;
+
+        int maxCount = Mathf.Min(trajectoryStepCount, trajectoryPoints.Length);
+        Vector2 startPos = firePoint.position;
+        Vector2 startVelocity = firePoint.right * power;
+        float gravity = Physics2D.gravity.y * GetEffectiveGravityScale();
+
+        Vector2 previousPosition = startPos;
+        trajectoryPoints[0] = startPos;
+        int pointCount = 1;
+
+        for (int i = 1; i < maxCount; i++)
         {
             float t = i * timeStep;
-            Vector2 currentPosition = startingPosition + startingVelocity * t + 0.5f * Vector2.up * gravity * t * t;
-            
+            Vector2 currentPosition = startPos + startVelocity * t + 0.5f * Vector2.up * gravity * t * t;
+
             RaycastHit2D hit = Physics2D.Linecast(previousPosition, currentPosition, groundLayer);
-            if (hit.collider != null) {
-                points.Add(hit.point);
-                break; 
+            if (hit.collider != null)
+            {
+                trajectoryPoints[pointCount++] = hit.point;
+                break;
             }
-            points.Add(currentPosition);
+
+            trajectoryPoints[pointCount++] = currentPosition;
             previousPosition = currentPosition;
         }
-        lineRenderer.positionCount = points.Count;
-        lineRenderer.SetPositions(points.ToArray());
+
+        lineRenderer.positionCount = pointCount;
+        for (int i = 0; i < pointCount; i++)
+        {
+            lineRenderer.SetPosition(i, trajectoryPoints[i]);
+        }
     }
 
-    void Launch(float power)
+    private void Launch(float power)
     {
-        // 달 해금 미션 체크
-        if (UpgradeManager.IsMoonUnlocked && currentAngle >= 89f && power >= maxForce - 0.5f)
+        if (ShouldGoToMoon(power))
         {
-            SceneManager.LoadScene("MoonStage");
+            SceneManager.LoadScene(moonSceneName);
             return;
         }
 
-        GameObject bulletObj = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-        Bullet bulletScript = bulletObj.GetComponent<Bullet>();
-        if (bulletScript != null) bulletScript.launcher = this; // ★ 주인 연결
+        if (projectilePrefab == null || firePoint == null) return;
 
-        Rigidbody2D rb = bulletObj.GetComponent<Rigidbody2D>();
-        if (rb != null) {
-            rb.mass = UpgradeManager.ProjectileMass; 
+        GameObject bulletObj = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+
+        if (bulletObj.TryGetComponent(out Bullet bulletScript))
+        {
+            bulletScript.launcher = this;
+        }
+
+        if (bulletObj.TryGetComponent(out Rigidbody2D rb))
+        {
+            rb.mass = UpgradeManager.ProjectileMass;
+            rb.gravityScale = GetEffectiveGravityScale();
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
             rb.AddForce(firePoint.right * power, ForceMode2D.Impulse);
         }
 
-        if (vcamProjectile != null) {
+        if (vcamProjectile != null)
+        {
             vcamProjectile.Follow = bulletObj.transform;
-            vcamProjectile.Priority = 20; 
+            vcamProjectile.Priority = 20;
         }
+    }
+
+    private bool ShouldGoToMoon(float power)
+    {
+        return UpgradeManager.IsMoonUnlocked && currentAngle >= 89f && power >= maxForce - 0.5f;
     }
 
     public void ResetCamera()
     {
-        if (vcamProjectile != null) {
-            vcamProjectile.Priority = 5;
-            vcamProjectile.Follow = null;
-        }
+        if (vcamProjectile == null) return;
+
+        vcamProjectile.Priority = 5;
+        vcamProjectile.Follow = null;
     }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4807599914941225703}
   m_Layer: 0
   m_Name: Bullet 1
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,11 +137,10 @@ MonoBehaviour:
   distancePopupPrefab: {fileID: 6916173199140219918, guid: 9d0cac4ae730bbc42bbc0e465549a077, type: 3}
   labBuildingPrefab: {fileID: 8738395539795324045, guid: 44a551174c796af449d57a730204b141, type: 3}
   labYOffset: -0.2
-  finishDelay: 2
-  mountainTopReward: 5
-  spotReward: 3
-  groundBaseReward: 1
-  groundDistanceRewardUnit: 10
+  rotateToVelocity: 1
+  spriteAngleOffset: 0
+  rotationLerpSpeed: 15
+  minRotateSpeed: 0.1
 --- !u!58 &4807599914941225703
 CircleCollider2D:
   m_ObjectHideFlags: 0

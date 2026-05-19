@@ -82,6 +82,15 @@ public class Bullet : MonoBehaviour
             StopProjectile();
             StartCoroutine(FinishTurn(true));
         }
+        else if (hitTag == "MapBoundary")
+        {
+            isLanded = true;
+            StopProjectile();
+
+            Debug.Log("맵 끝에 도달했습니다!");
+
+            StartCoroutine(FinishTurn(true));
+        }
         else if (hitTag.Contains("Spot"))
         {
             isLanded = true;

@@ -139,22 +139,44 @@ public class UpgradeManager : MonoBehaviour
         bioCostBio = ScaleCost(bioCostBio, 1.8f);
         FinishUpgrade();
     }
+    public bool CanLaunchToMoon()
+    {
+        if (resManager == null)
+            resManager = ResourceManager.Instance;
+
+        if (resManager == null)
+            return false;
+
+        bool hasRequiredLevels =
+            rangeLevel >= reqRangeLevelForMoon &&
+            weightLevel >= reqWeightLevelForMoon;
+
+        bool hasEnoughResources =
+            resManager.physicsRes >= moonCostAll &&
+            resManager.chemistryRes >= moonCostAll &&
+            resManager.biologyRes >= moonCostAll &&
+            resManager.earthRes >= moonCostAll;
+
+        return hasRequiredLevels && hasEnoughResources;
+    }
 
     public void UpgradeUnlockMoon()
     {
-        if (resManager == null || IsMoonUnlocked) return;
+        if (CanLaunchToMoon())
+        {
+            if (missionPopup != null)
+                missionPopup.SetActive(true);
 
-        bool isLevelMet = rangeLevel >= reqRangeLevelForMoon && weightLevel >= reqWeightLevelForMoon;
-        if (!isLevelMet) return;
-        if (!resManager.SpendAllTypes(moonCostAll)) return;
+            Debug.Log("달 발사 조건 만족! 대포를 90도로 맞추고 최대 힘으로 발사하세요.");
+        }
+        else
+        {
+            Debug.Log("아직 달 발사 조건이 부족합니다.");
+        }
 
-        IsMoonUnlocked = true;
-
-        if (moonStageButton != null) moonStageButton.interactable = true;
-        if (missionPopup != null) missionPopup.SetActive(true);
-
-        FinishUpgrade();
+        UpdateUpgradeUI();
     }
+
 
     private int ScaleCost(int currentCost, float multiplier)
     {
@@ -177,7 +199,18 @@ public class UpgradeManager : MonoBehaviour
 
         if (moonText != null)
         {
-            moonText.text = IsMoonUnlocked ? "[해금 완료]" : $"Lv조건: 파워{reqRangeLevelForMoon}/경량{reqWeightLevelForMoon}\n각 {moonCostAll}개 필요";
+            if (CanLaunchToMoon())
+            {
+                moonText.text = $"달 발사 가능!\n각도 90도 + 최대 파워";
+            }
+            else
+            {
+                moonText.text =
+                    $"달 발사 조건\n" +
+                    $"파워 Lv.{reqRangeLevelForMoon}\n" +
+                    $"경량화 Lv.{reqWeightLevelForMoon}\n" +
+                    $"모든 자원 {moonCostAll}개";
+            }
         }
     }
 

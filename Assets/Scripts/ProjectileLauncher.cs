@@ -201,6 +201,7 @@ public class ProjectileLauncher : MonoBehaviour
     {
         if (ShouldGoToMoon(power))
         {
+            Debug.Log("달 발사 성공! MoonStage로 이동합니다.");
             SceneManager.LoadScene(moonSceneName);
             return;
         }
@@ -232,9 +233,17 @@ public class ProjectileLauncher : MonoBehaviour
 
     private bool ShouldGoToMoon(float power)
     {
-        return UpgradeManager.IsMoonUnlocked && currentAngle >= 89f && power >= maxForce - 0.5f;
-    }
+        if (UpgradeManager.Instance == null)
+            return false;
 
+        bool canLaunchToMoon = UpgradeManager.Instance.CanLaunchToMoon();
+
+        bool isStraightUp = currentAngle >= 89f;
+
+        bool isMaxPower = power >= maxForce - 0.5f;
+
+        return canLaunchToMoon && isStraightUp && isMaxPower;
+    }
     public void ResetCamera()
     {
         if (vcamProjectile == null) return;

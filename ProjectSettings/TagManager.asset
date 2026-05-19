@@ -11,6 +11,8 @@ TagManager:
   - Ground
   - Mountain
   - MountainTop
+  - Ball
+  - MapBoundary
   layers:
   - Default
   - TransparentFX

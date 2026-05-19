@@ -1,146 +1,158 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class Bullet : MonoBehaviour
 {
+    private Vector2 startPosition;
+    private bool isLanded = false;
+
     [HideInInspector] public ProjectileLauncher launcher;
 
-    [Header("착륙 연출")]
     public GameObject distancePopupPrefab;
     public GameObject labBuildingPrefab;
     public float labYOffset = 0.5f;
-    public float finishDelay = 2.0f;
 
-    [Header("보상 설정")]
-    public int mountainTopReward = 5;
-    public int spotReward = 3;
-    public int groundBaseReward = 1;
-    public float groundDistanceRewardUnit = 10f;
+    [Header("포탄 회전 설정")]
+    [SerializeField] private bool rotateToVelocity = true;
 
-    private Vector2 startPosition;
+    [Tooltip("포탄 이미지가 오른쪽을 바라보면 0, 위를 바라보면 -90, 아래를 바라보면 90")]
+    [SerializeField] private float spriteAngleOffset = 0f;
+
+    [Tooltip("회전이 너무 딱딱하면 값을 낮추세요. 즉시 회전은 999")]
+    [SerializeField] private float rotationLerpSpeed = 15f;
+
+    [Tooltip("이 속도보다 느리면 회전을 멈춤")]
+    [SerializeField] private float minRotateSpeed = 0.1f;
+
     private Rigidbody2D rb;
-    private bool isLanded;
 
-    private void Awake()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Start()
+    void Start()
     {
         startPosition = transform.position;
+    }
+
+    void Update()
+    {
+        if (!isLanded && rotateToVelocity)
+        {
+            UpdateProjectileRotation();
+        }
+    }
+
+    private void UpdateProjectileRotation()
+    {
+        if (rb == null) return;
+
+        Vector2 velocity = rb.linearVelocity;
+
+        if (velocity.sqrMagnitude < minRotateSpeed * minRotateSpeed)
+            return;
+
+        float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle + spriteAngleOffset);
+
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            targetRotation,
+            rotationLerpSpeed * Time.deltaTime
+        );
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (isLanded) return;
-        if (ResourceManager.Instance == null) return;
 
-        GameObject hitObject = collision.gameObject;
+        string hitTag = collision.gameObject.tag;
 
-        if (hitObject.CompareTag("MountainTop"))
+        if (hitTag == "MountainTop")
         {
-            Land(false);
-            ResourceManager.Instance.AddAllResources(mountainTopReward + UpgradeManager.BonusAmount);
+            isLanded = true;
+            StopProjectile();
+            ResourceManager.Instance.AddAllResources(5 + UpgradeManager.BonusAmount);
             StartCoroutine(FinishTurn(false));
-            return;
         }
-
-        if (hitObject.CompareTag("Mountain"))
+        else if (hitTag == "Mountain")
         {
-            Land(true);
-            return;
+            isLanded = true;
+            StopProjectile();
+            StartCoroutine(FinishTurn(true));
         }
-
-        if (hitObject.CompareTag("Ground"))
+        else if (hitTag.Contains("Spot"))
         {
-            LandOnGround();
-            return;
+            isLanded = true;
+            StopProjectile();
+
+            LabGenerator lab = collision.gameObject.GetComponent<LabGenerator>();
+
+            if (lab != null)
+            {
+                bool isNew = lab.ActivateLab();
+
+                string subject = hitTag.Replace("Spot", "");
+                int score = 3 + UpgradeManager.BonusAmount;
+
+                ResourceManager.Instance.AddResource(subject, score);
+
+                if (isNew)
+                {
+                    Vector3 spawnPos = collision.transform.position + new Vector3(0, labYOffset, 0);
+                    GameObject builtLab = Instantiate(labBuildingPrefab, spawnPos, Quaternion.identity);
+                    builtLab.transform.SetParent(collision.transform);
+                }
+
+                StartCoroutine(FinishTurn(!isNew));
+            }
         }
-
-        if (hitObject.CompareTag("PhysicsSpot") || hitObject.CompareTag("ChemistrySpot") ||
-            hitObject.CompareTag("BiologySpot") || hitObject.CompareTag("EarthSpot"))
+        else if (hitTag == "Ground")
         {
-            LandOnResourceSpot(hitObject);
+            isLanded = true;
+            StopProjectile();
+
+            float distance = Vector2.Distance(startPosition, transform.position);
+
+            if (distancePopupPrefab != null)
+            {
+                GameObject popup = Instantiate(
+                    distancePopupPrefab,
+                    transform.position + Vector3.up,
+                    Quaternion.identity
+                );
+
+                popup.GetComponent<DistancePopup>().Setup(distance);
+            }
+
+            ResourceManager.Instance.AddResource(
+                "Physics",
+                1 + (int)(distance / 10f) + UpgradeManager.BonusAmount
+            );
+
+            StartCoroutine(FinishTurn(true));
         }
     }
 
-    private void Land(bool destroyAfterDelay)
+    void StopProjectile()
     {
-        isLanded = true;
-        StopProjectile();
-        StartCoroutine(FinishTurn(destroyAfterDelay));
-    }
-
-    private void LandOnGround()
-    {
-        isLanded = true;
-        StopProjectile();
-
-        float distance = Vector2.Distance(startPosition, transform.position);
-        SpawnDistancePopup(distance);
-
-        int reward = groundBaseReward + Mathf.FloorToInt(distance / groundDistanceRewardUnit) + UpgradeManager.BonusAmount;
-        ResourceManager.Instance.AddResource(ResourceType.Physics, reward);
-        StartCoroutine(FinishTurn(true));
-    }
-
-    private void LandOnResourceSpot(GameObject hitObject)
-    {
-        isLanded = true;
-        StopProjectile();
-
-        ResourceType type = ResourceManager.TagToResourceType(hitObject.tag);
-        int reward = spotReward + UpgradeManager.BonusAmount;
-        ResourceManager.Instance.AddResource(type, reward);
-
-        bool isNewLab = false;
-        if (hitObject.TryGetComponent(out LabGenerator lab))
+        if (rb != null)
         {
-            isNewLab = lab.ActivateLab();
-        }
-
-        if (isNewLab && labBuildingPrefab != null)
-        {
-            Vector3 spawnPos = hitObject.transform.position + new Vector3(0f, labYOffset, 0f);
-            GameObject builtLab = Instantiate(labBuildingPrefab, spawnPos, Quaternion.identity, hitObject.transform);
-            builtLab.name = $"{type} Lab Building";
-        }
-
-        StartCoroutine(FinishTurn(!isNewLab));
-    }
-
-    private void SpawnDistancePopup(float distance)
-    {
-        if (distancePopupPrefab == null) return;
-
-        GameObject popup = Instantiate(distancePopupPrefab, transform.position + Vector3.up, Quaternion.identity);
-        if (popup.TryGetComponent(out DistancePopup popupScript))
-        {
-            popupScript.Setup(distance);
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.bodyType = RigidbodyType2D.Static;
         }
     }
 
-    private void StopProjectile()
+    IEnumerator FinishTurn(bool shouldDestroy)
     {
-        rb.linearVelocity = Vector2.zero;
-        rb.angularVelocity = 0f;
-        rb.bodyType = RigidbodyType2D.Static;
-    }
-
-    private IEnumerator FinishTurn(bool shouldDestroy)
-    {
-        yield return new WaitForSeconds(finishDelay);
+        yield return new WaitForSeconds(2.0f);
 
         if (launcher != null)
-        {
             launcher.ResetCamera();
-        }
 
         if (shouldDestroy)
-        {
             Destroy(gameObject);
-        }
     }
 }

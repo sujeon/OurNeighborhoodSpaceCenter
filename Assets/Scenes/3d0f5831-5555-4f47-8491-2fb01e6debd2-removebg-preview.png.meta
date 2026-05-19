@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 834e7d8d5a63c2f4389e3713d24a3c2a
+guid: 90760e2c14c7ee2448f6ba58a20bcca7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4617025196850518206
-    second: "ChatGPT_Image_2026\uB144_5\uC6D4_18\uC77C_\uC624\uD6C4_09_58_07-removebg-preview_0"
+      213: 4065448849406539039
+    second: 3d0f5831-5555-4f47-8491-2fb01e6debd2-removebg-preview_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "ChatGPT_Image_2026\uB144_5\uC6D4_18\uC77C_\uC624\uD6C4_09_58_07-removebg-preview_0"
+      name: 3d0f5831-5555-4f47-8491-2fb01e6debd2-removebg-preview_0
       rect:
         serializedVersion: 2
-        x: 19
-        y: 36
-        width: 461
-        height: 435
+        x: 48
+        y: 122
+        width: 404
+        height: 266
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eb89d4954f7f21040800000000000000
-      internalID: 4617025196850518206
+      spriteID: f15b56950306b6830800000000000000
+      internalID: 4065448849406539039
       vertices: []
       indices: 
       edges: []
@@ -148,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "ChatGPT_Image_2026\uB144_5\uC6D4_18\uC77C_\uC624\uD6C4_09_58_07-removebg-preview_0": 4617025196850518206
+      3d0f5831-5555-4f47-8491-2fb01e6debd2-removebg-preview_0: 4065448849406539039
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

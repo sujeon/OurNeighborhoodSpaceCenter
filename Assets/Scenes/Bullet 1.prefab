@@ -84,12 +84,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 90760e2c14c7ee2448f6ba58a20bcca7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 5, y: 5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -117,7 +117,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
@@ -133,9 +133,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e1d0cd5269e3d340bea1139cfc40bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
+  launcher: {fileID: 0}
   distancePopupPrefab: {fileID: 6916173199140219918, guid: 9d0cac4ae730bbc42bbc0e465549a077, type: 3}
   labBuildingPrefab: {fileID: 8738395539795324045, guid: 44a551174c796af449d57a730204b141, type: 3}
-  labYOffset: -1.2
+  labYOffset: -0.2
+  finishDelay: 2
+  mountainTopReward: 5
+  spotReward: 3
+  groundBaseReward: 1
+  groundDistanceRewardUnit: 10
 --- !u!58 &4807599914941225703
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -170,5 +176,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0.4999721, y: 0.03715679}
+  m_Radius: 0.4789722

@@ -1,24 +1,33 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class MenuButtons : MonoBehaviour
 {
+    [SerializeField] private SoundManager soundManager;
+    [SerializeField] private float sceneLoadDelay = 0.2f;
+
     public void StartGame()
     {
-        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        StartCoroutine(StartGameRoutine());
+    }
 
-        if (nextIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene(nextIndex);
-        }
-        else
-        {
-            Debug.LogWarning("다음 씬이 Build Settings에 등록되어 있지 않습니다.");
-        }
+    private IEnumerator StartGameRoutine()
+    {
+        if (soundManager != null)
+            soundManager.PlayButtonClick();
+
+        yield return new WaitForSeconds(sceneLoadDelay);
+
+        int index = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(index + 1);
     }
 
     public void QuitGame()
     {
+        if (soundManager != null)
+            soundManager.PlayButtonClick();
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

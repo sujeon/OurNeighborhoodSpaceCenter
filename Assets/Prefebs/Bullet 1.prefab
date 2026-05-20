@@ -141,6 +141,12 @@ MonoBehaviour:
   spriteAngleOffset: 0
   rotationLerpSpeed: 15
   minRotateSpeed: 0.1
+  landingSound: {fileID: 8300000, guid: 7d5c2ee88d83ece4d9cb82522f0c6ea3, type: 3}
+  landingEffectPrefab: {fileID: 0}
+  buildLabSound: {fileID: 8300000, guid: 9ad879d9d6d28e143865af255c515740, type: 3}
+  buildLabEffectPrefab: {fileID: 0}
+  landingSoundVolume: 1
+  buildSoundVolume: 1
 --- !u!58 &4807599914941225703
 CircleCollider2D:
   m_ObjectHideFlags: 0

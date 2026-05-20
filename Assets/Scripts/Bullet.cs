@@ -24,6 +24,17 @@ public class Bullet : MonoBehaviour
     [Tooltip("이 속도보다 느리면 회전을 멈춤")]
     [SerializeField] private float minRotateSpeed = 0.1f;
 
+    [Header("착지 사운드 / 이펙트")]
+    [SerializeField] private AudioClip landingSound;
+    [SerializeField] private GameObject landingEffectPrefab;
+
+    [Header("연구소 생성 사운드 / 이펙트")]
+    [SerializeField] private AudioClip buildLabSound;
+    [SerializeField] private GameObject buildLabEffectPrefab;
+
+    [Header("사운드 볼륨")]
+    [SerializeField] private float landingSoundVolume = 1f;
+    [SerializeField] private float buildSoundVolume = 1f;
     private Rigidbody2D rb;
 
     void Awake()
@@ -95,6 +106,7 @@ public class Bullet : MonoBehaviour
         {
             isLanded = true;
             StopProjectile();
+            PlayLandingFeedback(transform.position);
 
             LabGenerator lab = collision.gameObject.GetComponent<LabGenerator>();
 
@@ -112,6 +124,7 @@ public class Bullet : MonoBehaviour
                     Vector3 spawnPos = collision.transform.position + new Vector3(0, labYOffset, 0);
                     GameObject builtLab = Instantiate(labBuildingPrefab, spawnPos, Quaternion.identity);
                     builtLab.transform.SetParent(collision.transform);
+                    PlayBuildLabFeedback(spawnPos);
                 }
 
                 StartCoroutine(FinishTurn(!isNew));
@@ -121,6 +134,8 @@ public class Bullet : MonoBehaviour
         {
             isLanded = true;
             StopProjectile();
+
+            PlayLandingFeedback(transform.position);
 
             float distance = Vector2.Distance(startPosition, transform.position);
 
@@ -154,6 +169,34 @@ public class Bullet : MonoBehaviour
         }
     }
 
+    private void PlaySoundAtPosition(AudioClip clip, Vector3 position, float volume = 1f)
+    {
+        if (clip == null)
+            return;
+
+        AudioSource.PlayClipAtPoint(clip, position, volume);
+    }
+
+    private void SpawnEffect(GameObject effectPrefab, Vector3 position)
+    {
+        if (effectPrefab == null)
+            return;
+
+        GameObject effect = Instantiate(effectPrefab, position, Quaternion.identity);
+        Destroy(effect, 2f);
+    }
+
+    private void PlayLandingFeedback(Vector3 position)
+    {
+        PlaySoundAtPosition(landingSound, position, landingSoundVolume);
+        SpawnEffect(landingEffectPrefab, position);
+    }
+
+    private void PlayBuildLabFeedback(Vector3 position)
+    {
+        PlaySoundAtPosition(buildLabSound, position, buildSoundVolume);
+        SpawnEffect(buildLabEffectPrefab, position);
+    }
     IEnumerator FinishTurn(bool shouldDestroy)
     {
         yield return new WaitForSeconds(2.0f);

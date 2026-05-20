@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Cinemachine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class ProjectileLauncher : MonoBehaviour
 {
@@ -13,6 +14,13 @@ public class ProjectileLauncher : MonoBehaviour
     public CinemachineBrain camBrain;
     public CinemachineCamera vcamProjectile;
     public CinemachineCamera vcamLauncher;
+
+    [Header("사운드")]
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioClip chargeSound;
+    [SerializeField] private AudioClip launchSound;
+
+    private bool hasPlayedChargeSound = false;
 
     [Header("발사 설정")]
     public float minPower = 5f;
@@ -121,6 +129,8 @@ public class ProjectileLauncher : MonoBehaviour
         currentPower = minPower;
         SetLineVisible(true);
         UpdatePowerSlider();
+
+        PlayChargeSound();
     }
 
     private void ChargePower()
@@ -131,7 +141,9 @@ public class ProjectileLauncher : MonoBehaviour
 
     private void FireChargedProjectile()
     {
+        StopChargeSound();
         Launch(currentPower);
+
         isCharging = false;
         SetLineVisible(false);
     }
@@ -199,10 +211,12 @@ public class ProjectileLauncher : MonoBehaviour
 
     private void Launch(float power)
     {
+        PlayLaunchSound();
+
         if (ShouldGoToMoon(power))
         {
             Debug.Log("달 발사 성공! MoonStage로 이동합니다.");
-            SceneManager.LoadScene(moonSceneName);
+            StartCoroutine(LoadMoonStageAfterSound());
             return;
         }
 
@@ -244,6 +258,38 @@ public class ProjectileLauncher : MonoBehaviour
 
         return canLaunchToMoon && isStraightUp && isMaxPower;
     }
+
+    private void PlayChargeSound()
+    {
+        if (hasPlayedChargeSound)
+            return;
+
+        if (sfxSource == null || chargeSound == null)
+            return;
+
+        sfxSource.PlayOneShot(chargeSound);
+        hasPlayedChargeSound = true;
+    }
+
+    private void StopChargeSound()
+    {
+        hasPlayedChargeSound = false;
+    }
+
+    private void PlayLaunchSound()
+    {
+        if (sfxSource == null || launchSound == null)
+            return;
+
+        sfxSource.PlayOneShot(launchSound);
+    }
+
+    private IEnumerator LoadMoonStageAfterSound()
+    {
+        yield return new WaitForSeconds(0.4f);
+        SceneManager.LoadScene(moonSceneName);
+    }
+
     public void ResetCamera()
     {
         if (vcamProjectile == null) return;

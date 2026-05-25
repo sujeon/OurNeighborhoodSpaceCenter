@@ -1,0 +1,1106 @@
+fileFormatVersion: 2
+guid: f7cf26eceaefd884eacd2513ad8e4964
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8758481220454835676
+    second: MoonTileSet_0
+  - first:
+      213: 5317179582210193960
+    second: MoonTileSet_1
+  - first:
+      213: 6049930139960368809
+    second: MoonTileSet_2
+  - first:
+      213: -9071770834813369187
+    second: MoonTileSet_3
+  - first:
+      213: -8258824192574638354
+    second: MoonTileSet_4
+  - first:
+      213: -7869066911410121318
+    second: MoonTileSet_5
+  - first:
+      213: -8422526414234848095
+    second: MoonTileSet_6
+  - first:
+      213: -7128947140043817229
+    second: MoonTileSet_7
+  - first:
+      213: -7121865372815120768
+    second: MoonTileSet_8
+  - first:
+      213: -5741411805335721480
+    second: MoonTileSet_9
+  - first:
+      213: -3944479090742118403
+    second: MoonTileSet_10
+  - first:
+      213: -7659449639413269182
+    second: MoonTileSet_11
+  - first:
+      213: -2962475098842773775
+    second: MoonTileSet_12
+  - first:
+      213: 9080988976416126610
+    second: MoonTileSet_13
+  - first:
+      213: -1061911078255766343
+    second: MoonTileSet_14
+  - first:
+      213: 3263729245700489466
+    second: MoonTileSet_15
+  - first:
+      213: 3965876134793269162
+    second: MoonTileSet_16
+  - first:
+      213: 8795842876645575364
+    second: MoonTileSet_17
+  - first:
+      213: -216925352649082213
+    second: MoonTileSet_18
+  - first:
+      213: 4501401768305783889
+    second: MoonTileSet_19
+  - first:
+      213: 7708671085772819577
+    second: MoonTileSet_20
+  - first:
+      213: 1118777613034045653
+    second: MoonTileSet_21
+  - first:
+      213: 6765613773575177371
+    second: MoonTileSet_22
+  - first:
+      213: -8499168815516984175
+    second: MoonTileSet_23
+  - first:
+      213: -7392280448396687158
+    second: MoonTileSet_24
+  - first:
+      213: 7232153044719476644
+    second: MoonTileSet_25
+  - first:
+      213: 7993881591176027021
+    second: MoonTileSet_26
+  - first:
+      213: -4425830075600746724
+    second: MoonTileSet_27
+  - first:
+      213: -747197112820127883
+    second: MoonTileSet_28
+  - first:
+      213: 8951616307603433203
+    second: MoonTileSet_29
+  - first:
+      213: -2924802382554990162
+    second: MoonTileSet_30
+  - first:
+      213: -5821665136293263783
+    second: MoonTileSet_31
+  - first:
+      213: -906555444272847754
+    second: MoonTileSet_32
+  - first:
+      213: 7170909900967073496
+    second: MoonTileSet_33
+  - first:
+      213: 5436410841498525450
+    second: MoonTileSet_34
+  - first:
+      213: 3705049270024201182
+    second: MoonTileSet_35
+  - first:
+      213: 4447221278467766258
+    second: MoonTileSet_36
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 110
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MoonTileSet_0
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 407
+        width: 72
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28e50218d5d815c46b69ab2e76cbaf6f
+      internalID: 8758481220454835676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_1
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 406
+        width: 70
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55a27c869b0b2764ca17a6121d516009
+      internalID: 5317179582210193960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_2
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 407
+        width: 65
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c1fa0472dcfbe124b9186c58596f7047
+      internalID: 6049930139960368809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_3
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 406
+        width: 67
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6136bb5b4e239a74db671c27fbdf0fb2
+      internalID: -9071770834813369187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_4
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 406
+        width: 56
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 971ea9b35480deb4f94f75dd9cf73971
+      internalID: -8258824192574638354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_5
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 406
+        width: 32
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf51d2eb555f56f489936f7fa4dcaa3e
+      internalID: -7869066911410121318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_6
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 406
+        width: 35
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd7cdd7f8cf0dfc4d8daf29c7390bbcd
+      internalID: -8422526414234848095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_7
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 324
+        width: 71
+        height: 70
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cdf51799485b43b4686f9a7172c04bf2
+      internalID: -7128947140043817229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_8
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 324
+        width: 54
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a022a6c7170e63b40a7ea4146dccc71d
+      internalID: -7121865372815120768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_9
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 324
+        width: 50
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd9520277ba6a864293e1b6fe496dff1
+      internalID: 1386352039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_10
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 324
+        width: 44
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53566e6bcbcc6bd41a54e7224d512d9c
+      internalID: 2039751100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_11
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 323
+        width: 91
+        height: 71
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7d53c61335d4474ead107235c2cb682
+      internalID: 936977491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_12
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 322
+        width: 93
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 723004a77456e2744bababbc1c4e43a9
+      internalID: 503127705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_13
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 249
+        width: 71
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a764d90e8c69d3140b604f1d749514ca
+      internalID: 71412829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_14
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 249
+        width: 64
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4778d948c814a74b8e4fc3fba1d63cd
+      internalID: 897426014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_15
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 249
+        width: 72
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b5728cb23b08f648ab35ab4af357b48
+      internalID: -75140195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_16
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 249
+        width: 62
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a670d742ea37fb4e888bcd8800ee65e
+      internalID: 2051911670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_17
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 249
+        width: 61
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95f3ded29c6b8d84188edde1bd11d0bc
+      internalID: -238252958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_18
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 249
+        width: 72
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81da18fde10d14f4989ab55609208343
+      internalID: 650827307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_19
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 174
+        width: 88
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5dc00865e6276c4fa29c2767089c8b6
+      internalID: 716799955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_20
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 174
+        width: 91
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccac819343f2ef24897fe92ea7d5a4c9
+      internalID: 522627818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_21
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 174
+        width: 63
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5dddad46486a2a349b3c48feb77909ea
+      internalID: 253933747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_22
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 174
+        width: 84
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84a86aa5fdacec2468c7ee058daadb59
+      internalID: -826193423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_23
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 174
+        width: 91
+        height: 62
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 971e2bc041fd556469d192a7bcf671f1
+      internalID: -214006876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_24
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 104
+        width: 72
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6957a95107d714e4e82a8f638788ad08
+      internalID: 39825088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_25
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 104
+        width: 69
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee888d18df687a348954eab81a9103c9
+      internalID: -1016944470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_26
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 104
+        width: 66
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e91a6e38e5d990c41903d34d66a3bf23
+      internalID: -781761997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_27
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 104
+        width: 66
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae9fa164a8c6343478e7bc03da7c38b3
+      internalID: 402512046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_28
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 104
+        width: 68
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 175dce841ec529648b80875db6d2ff12
+      internalID: 1454176239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_29
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 104
+        width: 70
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b4727c0c673cf649b6a606e742789d5
+      internalID: 1415362412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_30
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 27
+        width: 70
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c78fef8e5b29aeb43b6e878d824f520c
+      internalID: 2142328502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_31
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 33
+        width: 40
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a9205453a4d9d245881328a47078fae
+      internalID: -1902423218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_32
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 39
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e4c6c710786b88469853bf22bb69403
+      internalID: 1805333181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_33
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 28
+        width: 18
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 829fc5a317487ec4781ce4580830c1f0
+      internalID: -1455784902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_34
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 24
+        width: 54
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 996fbf85dba2e8d46823409143b1d2db
+      internalID: -1840825678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_35
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 21
+        width: 54
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 256023c315854ec46ae90ec9d2420d16
+      internalID: -1590171672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_36
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 22
+        width: 61
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ceb0bd9244a9ea479b2bec1d878a6b8
+      internalID: 451990936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MoonTileSet_37
+      rect:
+        serializedVersion: 2
+        x: 414
+        y: 21
+        width: 57
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 255314159417e3d4787c7faedf0ff98e
+      internalID: -1609966083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 9b705641a5f0c064d987b4fe483f789a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":128.0,"y":128.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      MoonTileSet_0: 8758481220454835676
+      MoonTileSet_1: 5317179582210193960
+      MoonTileSet_10: 2039751100
+      MoonTileSet_11: 936977491
+      MoonTileSet_12: 503127705
+      MoonTileSet_13: 71412829
+      MoonTileSet_14: 897426014
+      MoonTileSet_15: -75140195
+      MoonTileSet_16: 2051911670
+      MoonTileSet_17: -238252958
+      MoonTileSet_18: 650827307
+      MoonTileSet_19: 716799955
+      MoonTileSet_2: 6049930139960368809
+      MoonTileSet_20: 522627818
+      MoonTileSet_21: 253933747
+      MoonTileSet_22: -826193423
+      MoonTileSet_23: -214006876
+      MoonTileSet_24: 39825088
+      MoonTileSet_25: -1016944470
+      MoonTileSet_26: -781761997
+      MoonTileSet_27: 402512046
+      MoonTileSet_28: 1454176239
+      MoonTileSet_29: 1415362412
+      MoonTileSet_3: -9071770834813369187
+      MoonTileSet_30: 2142328502
+      MoonTileSet_31: -1902423218
+      MoonTileSet_32: 1805333181
+      MoonTileSet_33: -1455784902
+      MoonTileSet_34: -1840825678
+      MoonTileSet_35: -1590171672
+      MoonTileSet_36: 451990936
+      MoonTileSet_37: -1609966083
+      MoonTileSet_4: -8258824192574638354
+      MoonTileSet_5: -7869066911410121318
+      MoonTileSet_6: -8422526414234848095
+      MoonTileSet_7: -7128947140043817229
+      MoonTileSet_8: -7121865372815120768
+      MoonTileSet_9: 1386352039
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

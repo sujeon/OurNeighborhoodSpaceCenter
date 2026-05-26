@@ -128,6 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8692519}
+  - component: {fileID: 8692520}
   m_Layer: 6
   m_Name: Crater1
   m_TagString: Untagged
@@ -152,6 +153,21 @@ Transform:
   - {fileID: 2087891823}
   m_Father: {fileID: 837080756}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8692520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8835c70c37bc2484c8ccb341af548b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoonCraterZone
+  craterName: Crater 1
+  buildPoint: {fileID: 2087891823}
+  landingReward: 10
 --- !u!1 &32210381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2073,6 +2089,68 @@ MonoBehaviour:
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
   m_ConstraintCount: 2
+--- !u!1 &753763176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 753763178}
+  - component: {fileID: 753763177}
+  m_Layer: 0
+  m_Name: MoonBuildManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &753763177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753763176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c06ef4eab5139ae44820e9c401b5d237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoonBuildManager
+  roverBasePrefab: {fileID: 3901251333572696903, guid: 56763f6085227b246817112fc24cc85a, type: 3}
+  rareEarthMinePrefab: {fileID: 7556168013887217672, guid: ba61db8ec0305a04b98093a63e8b2f37, type: 3}
+  plantDomePrefab: {fileID: 3233241153103776223, guid: 0f7426fba23dff347be99cc95e6b1e1c, type: 3}
+  spaceTelescopePrefab: {fileID: 8594677888279121119, guid: 7d2a1bf4938775147858c2928f39f53b, type: 3}
+  hasRoverBase: 0
+  hasRareEarthMine: 0
+  hasPlantDome: 0
+  hasSpaceTelescope: 0
+  roverBaseCost: 40
+  rareEarthMineCost: 40
+  plantDomeCost: 40
+  spaceTelescopeCost: 40
+  buildPanel: {fileID: 0}
+  roverBaseBuildButton: {fileID: 0}
+  rareEarthMineBuildButton: {fileID: 0}
+  plantDomeBuildButton: {fileID: 0}
+  spaceTelescopeBuildButton: {fileID: 0}
+  currentCraterText: {fileID: 0}
+--- !u!4 &753763178
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753763176}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.85329, y: -5.66439, z: -0.02416}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &792048306
 GameObject:
   m_ObjectHideFlags: 0
@@ -24773,3 +24851,4 @@ SceneRoots:
   - {fileID: 575130902}
   - {fileID: 32210383}
   - {fileID: 737798624}
+  - {fileID: 753763178}

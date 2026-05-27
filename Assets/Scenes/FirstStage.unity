@@ -8911,7 +8911,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileLauncher
   projectilePrefab: {fileID: 2171449591642082631, guid: eb293e283a7dfc54ea0cc40b48e69743, type: 3}
   firePoint: {fileID: 1830024127}
-  lineRenderer: {fileID: 836771347}
   powerSlider: {fileID: 711830610}
   camBrain: {fileID: 519420033}
   vcamProjectile: {fileID: 917078172}
@@ -8934,6 +8933,10 @@ MonoBehaviour:
   minAngle: 0
   maxAngle: 90
   currentAngle: 0
+  trajectoryDotPrefab: {fileID: 2453031621817007184, guid: 3bac58d12b81b3b4082a31587d5d53cd, type: 3}
+  maxDotCount: 200
+  dotSpacing: 2
+  trajectoryDotParent: {fileID: 0}
 --- !u!212 &1231319317
 SpriteRenderer:
   serializedVersion: 2

@@ -3,13 +3,13 @@ using UnityEngine.UI;
 using Unity.Cinemachine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ProjectileLauncher : MonoBehaviour
 {
     [Header("참조 객체")]
     public GameObject projectilePrefab;
     public Transform firePoint;
-    public LineRenderer lineRenderer;
     public Slider powerSlider;
     public CinemachineBrain camBrain;
     public CinemachineCamera vcamProjectile;
@@ -45,6 +45,14 @@ public class ProjectileLauncher : MonoBehaviour
     public float maxAngle = 90f;
     [SerializeField] private float currentAngle = 0f;
 
+    [Header("점선 궤적 설정")]
+    [SerializeField] private GameObject trajectoryDotPrefab;
+    [SerializeField] private int maxDotCount = 40;
+    [SerializeField] private int dotSpacing = 3;
+    [SerializeField] private Transform trajectoryDotParent;
+
+    private readonly List<GameObject> trajectoryDots = new List<GameObject>();
+
     private float currentPower;
     private bool isCharging;
     private Rigidbody2D projectileRbTemplate;
@@ -59,6 +67,7 @@ public class ProjectileLauncher : MonoBehaviour
     {
         SetupSlider();
         SetLineVisible(false);
+        CreateTrajectoryDots();
     }
 
     private void Update()
@@ -68,6 +77,22 @@ public class ProjectileLauncher : MonoBehaviour
         RotateLauncher();
         HandleCharging();
     }
+    private void CreateTrajectoryDots()
+{
+    if (trajectoryDotPrefab == null)
+        return;
+
+    for (int i = 0; i < maxDotCount; i++)
+    {
+        GameObject dot = Instantiate(trajectoryDotPrefab, transform.position, Quaternion.identity);
+
+        if (trajectoryDotParent != null)
+            dot.transform.SetParent(trajectoryDotParent);
+
+        dot.SetActive(false);
+        trajectoryDots.Add(dot);
+    }
+}
 
     private void CacheProjectileTemplate()
     {
@@ -157,12 +182,13 @@ public class ProjectileLauncher : MonoBehaviour
     }
 
     private void SetLineVisible(bool visible)
+{
+
+    for (int i = 0; i < trajectoryDots.Count; i++)
     {
-        if (lineRenderer != null)
-        {
-            lineRenderer.enabled = visible;
-        }
+        trajectoryDots[i].SetActive(visible);
     }
+}
 
     private float GetEffectiveGravityScale()
     {
@@ -174,41 +200,60 @@ public class ProjectileLauncher : MonoBehaviour
     }
 
     private void DrawTrajectory(float power)
+{
+    if (firePoint == null) return;
+
+    int maxCount = Mathf.Min(trajectoryStepCount, trajectoryPoints.Length);
+    Vector2 startPos = firePoint.position;
+    Vector2 startVelocity = firePoint.right * power;
+    float gravity = Physics2D.gravity.y * GetEffectiveGravityScale();
+
+    Vector2 previousPosition = startPos;
+    trajectoryPoints[0] = startPos;
+    int pointCount = 1;
+
+    for (int i = 1; i < maxCount; i++)
     {
-        if (lineRenderer == null || firePoint == null) return;
+        float t = i * timeStep;
+        Vector2 currentPosition = startPos + startVelocity * t + 0.5f * Vector2.up * gravity * t * t;
 
-        int maxCount = Mathf.Min(trajectoryStepCount, trajectoryPoints.Length);
-        Vector2 startPos = firePoint.position;
-        Vector2 startVelocity = firePoint.right * power;
-        float gravity = Physics2D.gravity.y * GetEffectiveGravityScale();
-
-        Vector2 previousPosition = startPos;
-        trajectoryPoints[0] = startPos;
-        int pointCount = 1;
-
-        for (int i = 1; i < maxCount; i++)
+        RaycastHit2D hit = Physics2D.Linecast(previousPosition, currentPosition, groundLayer);
+        if (hit.collider != null)
         {
-            float t = i * timeStep;
-            Vector2 currentPosition = startPos + startVelocity * t + 0.5f * Vector2.up * gravity * t * t;
-
-            RaycastHit2D hit = Physics2D.Linecast(previousPosition, currentPosition, groundLayer);
-            if (hit.collider != null)
-            {
-                trajectoryPoints[pointCount++] = hit.point;
-                break;
-            }
-
-            trajectoryPoints[pointCount++] = currentPosition;
-            previousPosition = currentPosition;
+            trajectoryPoints[pointCount++] = hit.point;
+            break;
         }
 
-        lineRenderer.positionCount = pointCount;
-        for (int i = 0; i < pointCount; i++)
-        {
-            lineRenderer.SetPosition(i, trajectoryPoints[i]);
-        }
+        trajectoryPoints[pointCount++] = currentPosition;
+        previousPosition = currentPosition;
     }
 
+    UpdateTrajectoryDots(pointCount);
+}
+    private void UpdateTrajectoryDots(int pointCount)
+{
+    if (trajectoryDots.Count == 0)
+        return;
+
+    int dotIndex = 0;
+
+    for (int i = 0; i < pointCount; i += dotSpacing)
+    {
+        if (dotIndex >= trajectoryDots.Count)
+            break;
+
+        GameObject dot = trajectoryDots[dotIndex];
+        dot.transform.position = trajectoryPoints[i];
+        dot.SetActive(true);
+
+        dotIndex++;
+    }
+
+    for (int i = dotIndex; i < trajectoryDots.Count; i++)
+    {
+        trajectoryDots[i].SetActive(false);
+    }
+}
     private void Launch(float power)
     {
         PlayLaunchSound();

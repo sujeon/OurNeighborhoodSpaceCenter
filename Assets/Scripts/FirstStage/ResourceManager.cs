@@ -110,9 +110,7 @@ public class ResourceManager : MonoBehaviour
         physicsRes += amount;
         chemistryRes += amount;
         biologyRes += amount;
-        earthRes += amount;
-
-        Debug.Log($"<color=yellow>산 꼭대기 정복! 모든 자원 +{amount} 획득!</color>");
+        earthRes += amount; 
         UpdateUI();
     }
 

@@ -40,7 +40,7 @@ public class MoonTerrainGenerator : MonoBehaviour
     {
         if (groundTilemap == null || groundTile == null)
         {
-            Debug.LogWarning("Tilemap 또는 Tile이 연결되지 않았습니다.");
+            GameLogUI.Warning("달 지형 생성 실패: Tilemap 또는 Tile이 연결되지 않았습니다.");
             return;
         }
 
@@ -63,40 +63,33 @@ public class MoonTerrainGenerator : MonoBehaviour
             }
         }
 
-        Debug.Log("여러 크레이터 달 지형 생성 완료");
+        GameLogUI.Log($"달 지형 생성 완료: 폭 {mapWidth}, 크레이터 {(craters != null ? craters.Length : 0)}개");
     }
 
     private int CalculateHeight(int x)
     {
         float noise = Mathf.PerlinNoise(x * noiseScale, seed);
         int height = Mathf.RoundToInt(noise * heightMultiplier) + baseHeight;
-
         height -= GetTotalCraterDepthAtX(x);
-
         height = ApplyCraterFlatCenter(x, height);
-
         return Mathf.Max(1, height);
     }
 
     private int GetTotalCraterDepthAtX(int x)
     {
         int totalDepth = 0;
-
         if (craters == null)
             return totalDepth;
 
         foreach (CraterData crater in craters)
         {
             float distance = Mathf.Abs(x - crater.centerX);
-
             if (distance > crater.radius)
                 continue;
 
             float normalizedDistance = distance / crater.radius;
             float craterCurve = 1f - normalizedDistance * normalizedDistance;
-
-            int depth = Mathf.RoundToInt(craterCurve * crater.depth);
-            totalDepth += depth;
+            totalDepth += Mathf.RoundToInt(craterCurve * crater.depth);
         }
 
         return totalDepth;
@@ -113,12 +106,8 @@ public class MoonTerrainGenerator : MonoBehaviour
                 continue;
 
             int distance = Mathf.Abs(x - crater.centerX);
-
             if (distance <= crater.flatRadius)
-            {
-                int centerHeight = GetBaseHeightWithCrater(crater.centerX, crater);
-                return centerHeight;
-            }
+                return GetBaseHeightWithCrater(crater.centerX, crater);
         }
 
         return currentHeight;
@@ -132,7 +121,6 @@ public class MoonTerrainGenerator : MonoBehaviour
         float distance = Mathf.Abs(x - targetCrater.centerX);
         float normalizedDistance = distance / targetCrater.radius;
         float craterCurve = 1f - normalizedDistance * normalizedDistance;
-
         int depth = Mathf.RoundToInt(craterCurve * targetCrater.depth);
 
         return Mathf.Max(1, height - depth);

@@ -16,31 +16,23 @@ public class ResourceHUDBinder : MonoBehaviour
     private void Start()
     {
         if (bindOnStart)
-        {
             Bind();
-        }
     }
 
     public void Bind()
     {
         if (ResourceManager.Instance == null)
         {
-            Debug.LogWarning("ResourceManager.Instance가 없습니다. 자원 UI를 연결할 수 없습니다.");
+            GameLogUI.Warning("ResourceManager.Instance가 없습니다. 자원 UI를 연결할 수 없습니다.");
             return;
         }
 
-        ResourceManager resourceManager = ResourceManager.Instance;
-
-        resourceManager.physicsText = physicsText;
-        resourceManager.chemistryText = chemistryText;
-        resourceManager.biologyText = biologyText;
-        resourceManager.earthText = earthText;
+        ResourceManager.Instance.physicsText = physicsText;
+        ResourceManager.Instance.chemistryText = chemistryText;
+        ResourceManager.Instance.biologyText = biologyText;
+        ResourceManager.Instance.earthText = earthText;
 
         if (updateImmediately)
-        {
-            resourceManager.UpdateUI();
-        }
-
-        Debug.Log("현재 씬의 자원 HUD가 ResourceManager에 연결되었습니다.");
+            ResourceManager.Instance.UpdateUI();
     }
 }

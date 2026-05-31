@@ -1,38 +1,52 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
+public enum MoonLabType
+{
+    None,
+    RoverBase,
+    RareEarthMine,
+    PlantDome,
+    SpaceTelescope
+}
 
 public class MoonBuildManager : MonoBehaviour
 {
     public static MoonBuildManager Instance { get; private set; }
 
-    [Header("연구소 프리팹")]
-    public GameObject roverBasePrefab;
-    public GameObject rareEarthMinePrefab;
-    public GameObject plantDomePrefab;
-    public GameObject spaceTelescopePrefab;
+    [Header("기지 프리팹")]
+    [SerializeField] private GameObject roverBasePrefab;
+    [SerializeField] private GameObject rareEarthMinePrefab;
+    [SerializeField] private GameObject plantDomePrefab;
+    [SerializeField] private GameObject spaceTelescopePrefab;
 
     [Header("구매 상태")]
-    public bool hasRoverBase;
-    public bool hasRareEarthMine;
-    public bool hasPlantDome;
-    public bool hasSpaceTelescope;
+    [SerializeField] private bool hasRoverBase;
+    [SerializeField] private bool hasRareEarthMine;
+    [SerializeField] private bool hasPlantDome;
+    [SerializeField] private bool hasSpaceTelescope;
 
     [Header("구매 비용")]
-    public int roverBaseCost = 30;
-    public int rareEarthMineCost = 40;
-    public int plantDomeCost = 35;
-    public int spaceTelescopeCost = 45;
+    [SerializeField] private int roverBaseCost = 30;
+    [SerializeField] private int rareEarthMineCost = 40;
+    [SerializeField] private int plantDomeCost = 35;
+    [SerializeField] private int spaceTelescopeCost = 45;
 
-    [Header("UI")]
-    public GameObject buildPanel;
-    public Button roverBaseBuildButton;
-    public Button rareEarthMineBuildButton;
-    public Button plantDomeBuildButton;
-    public Button spaceTelescopeBuildButton;
-    public TextMeshProUGUI currentCraterText;
+    [Header("건설 UI")]
+    [SerializeField] private GameObject constructionPanel;
+    [SerializeField] private Button openConstructionButton;
 
-    private MoonCraterZone currentCrater;
+    [Header("고정 크레이터 UI 방식")]
+    [SerializeField] private MoonCraterZone[] craterZones;
+    [SerializeField] private CraterBuildItemUI[] craterItemUIs;
+
+    [Header("동적 프리팹 방식도 사용할 경우")]
+    [SerializeField] private Transform craterItemContent;
+    [SerializeField] private CraterBuildItemUI craterBuildItemPrefab;
+
+    private readonly List<MoonCraterZone> discoveredCraters = new List<MoonCraterZone>();
+    private readonly Dictionary<MoonCraterZone, CraterBuildItemUI> craterItemMap = new Dictionary<MoonCraterZone, CraterBuildItemUI>();
 
     private void Awake()
     {
@@ -47,154 +61,213 @@ public class MoonBuildManager : MonoBehaviour
 
     private void Start()
     {
-        if (buildPanel != null)
-            buildPanel.SetActive(false);
+        if (constructionPanel != null)
+            constructionPanel.SetActive(false);
 
-        UpdateBuildUI();
+        SetupFixedCraterItems();
+        RefreshConstructionUI();
+        UpdateOpenConstructionButton();
     }
 
-    public void SetCurrentCrater(MoonCraterZone crater)
+    private void SetupFixedCraterItems()
     {
-        currentCrater = crater;
+        if (craterZones == null || craterItemUIs == null)
+            return;
 
-        if (buildPanel != null)
-            buildPanel.SetActive(true);
-
-        UpdateBuildUI();
-    }
-
-    public void BuyRoverBase()
-    {
-        BuyLab(MoonLabType.RoverBase);
-    }
-
-    public void BuyRareEarthMine()
-    {
-        BuyLab(MoonLabType.RareEarthMine);
-    }
-
-    public void BuyPlantDome()
-    {
-        BuyLab(MoonLabType.PlantDome);
-    }
-
-    public void BuySpaceTelescope()
-    {
-        BuyLab(MoonLabType.SpaceTelescope);
-    }
-
-    public void BuildRoverBase()
-    {
-        BuildLab(MoonLabType.RoverBase);
-    }
-
-    public void BuildRareEarthMine()
-    {
-        BuildLab(MoonLabType.RareEarthMine);
-    }
-
-    public void BuildPlantDome()
-    {
-        BuildLab(MoonLabType.PlantDome);
-    }
-
-    public void BuildSpaceTelescope()
-    {
-        BuildLab(MoonLabType.SpaceTelescope);
-    }
-
-    public void CloseBuildPanel()
-    {
-        currentCrater = null;
-        SetBuildPanelVisible(false);
-        UpdateBuildUI();
-    }
-
-    private void BuyLab(MoonLabType labType)
-    {
-        if (HasPurchasedLab(labType))
+        int count = Mathf.Min(craterZones.Length, craterItemUIs.Length);
+        for (int i = 0; i < count; i++)
         {
-            Debug.Log($"{GetLabDisplayName(labType)}은 이미 구매했습니다.");
+            if (craterZones[i] == null || craterItemUIs[i] == null)
+                continue;
+
+            craterItemUIs[i].Setup(craterZones[i], this);
+            if (!craterItemMap.ContainsKey(craterZones[i]))
+                craterItemMap.Add(craterZones[i], craterItemUIs[i]);
+        }
+    }
+
+    public void OpenConstructionPanel()
+    {
+        if (discoveredCraters.Count <= 0)
+        {
+            GameLogUI.Log("아직 도착한 크레이터가 없습니다.");
             return;
         }
 
-        ResourceManager resourceManager = ResourceManager.Instance;
-        if (resourceManager == null)
+        if (constructionPanel != null)
+            constructionPanel.SetActive(true);
+
+        RefreshConstructionUI();
+    }
+
+    public void CloseConstructionPanel()
+    {
+        if (constructionPanel != null)
+            constructionPanel.SetActive(false);
+    }
+
+    public void RegisterCrater(MoonCraterZone crater)
+    {
+        if (crater == null)
+            return;
+
+        if (!discoveredCraters.Contains(crater))
         {
-            Debug.LogWarning("ResourceManager가 씬에 없습니다.");
+            discoveredCraters.Add(crater);
+            CreateDynamicCraterItemIfNeeded(crater);
+        }
+
+        RefreshConstructionUI();
+        UpdateOpenConstructionButton();
+    }
+
+    private void CreateDynamicCraterItemIfNeeded(MoonCraterZone crater)
+    {
+        if (craterItemMap.ContainsKey(crater))
+            return;
+
+        if (craterItemContent == null || craterBuildItemPrefab == null)
+            return;
+
+        CraterBuildItemUI item = Instantiate(craterBuildItemPrefab, craterItemContent);
+        item.Setup(crater, this);
+        craterItemMap.Add(crater, item);
+    }
+
+    public void RefreshConstructionUI()
+    {
+        foreach (CraterBuildItemUI item in craterItemMap.Values)
+        {
+            if (item != null)
+                item.Refresh();
+        }
+    }
+
+    private void UpdateOpenConstructionButton()
+    {
+        if (openConstructionButton != null)
+            openConstructionButton.gameObject.SetActive(discoveredCraters.Count > 0);
+    }
+
+    public void BuyRoverBase() => TryBuyLab(MoonLabType.RoverBase);
+    public void BuyRareEarthMine() => TryBuyLab(MoonLabType.RareEarthMine);
+    public void BuyPlantDome() => TryBuyLab(MoonLabType.PlantDome);
+    public void BuySpaceTelescope() => TryBuyLab(MoonLabType.SpaceTelescope);
+
+    private void TryBuyLab(MoonLabType labType)
+    {
+        if (HasPurchased(labType))
+        {
+            GameLogUI.Log($"{GetLabName(labType)}는 이미 구매했습니다.");
             return;
         }
 
-        ResourceType costType = GetCostType(labType);
+        if (ResourceManager.Instance == null)
+        {
+            GameLogUI.Warning("기지 구매 실패: ResourceManager가 없습니다.");
+            return;
+        }
+
         int cost = GetCost(labType);
+        ResourceType costType = GetCostResourceType(labType);
 
-        if (!resourceManager.Spend(costType, cost))
-        {
-            Debug.Log($"{GetLabDisplayName(labType)} 구매에 필요한 {costType} 자원이 부족합니다.");
+        if (!ResourceManager.Instance.Spend(costType, cost))
             return;
-        }
 
-        SetPurchasedLab(labType, true);
-        resourceManager.UpdateUI();
-        UpdateBuildUI();
+        SetPurchased(labType, true);
+        ResourceManager.Instance.UpdateUI();
+
+        GameLogUI.Log($"{GetLabName(labType)} 구매 완료! {ResourceManager.GetResourceName(costType)} -{cost}");
+        RefreshConstructionUI();
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SaveGame();
     }
 
-    private void BuildLab(MoonLabType labType)
+    public bool CanBuildLab(MoonLabType labType, MoonCraterZone crater)
     {
-        if (currentCrater == null)
-        {
-            Debug.Log("선택된 크레이터가 없습니다.");
-            return;
-        }
+        if (crater == null || !crater.CanBuild())
+            return false;
 
-        if (!currentCrater.IsBuildable || currentCrater.IsOccupied)
+        if (!HasPurchased(labType))
+            return false;
+
+        return GetPrefab(labType) != null;
+    }
+
+    public void BuildLabAtCrater(MoonLabType labType, MoonCraterZone crater)
+    {
+        if (!CanBuildLab(labType, crater))
         {
-            Debug.Log("이 크레이터에는 건설할 수 없습니다.");
+            GameLogUI.Log("건설할 수 없습니다. 크레이터 상태나 구매 여부를 확인하세요.");
             return;
         }
 
         GameObject prefab = GetPrefab(labType);
-        if (prefab == null)
+        GameObject builtLab = Instantiate(prefab, crater.GetBuildPosition(), Quaternion.identity);
+
+        if (!crater.TrySetBuiltLab(labType, builtLab))
         {
-            Debug.LogWarning($"{GetLabDisplayName(labType)} 프리팹이 연결되지 않았습니다.");
+            Destroy(builtLab);
+            GameLogUI.Warning("크레이터 상태 문제로 건설에 실패했습니다.");
             return;
         }
 
-        if (!HasPurchasedLab(labType))
-        {
-            Debug.Log("아직 이 연구소를 구매하지 않았습니다.");
-            return;
-        }
+        GameLogUI.Log($"{crater.CraterName}에 {GetLabName(labType)} 건설 완료!");
+        RefreshConstructionUI();
 
-        Instantiate(prefab, currentCrater.GetBuildPosition(), Quaternion.identity);
-
-        currentCrater.MarkOccupied();
-
-        currentCrater = null;
-        SetBuildPanelVisible(false);
-        UpdateBuildUI();
-
-        Debug.Log($"{GetLabDisplayName(labType)} 건설 완료!");
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SaveGame();
     }
 
-    private GameObject GetPrefab(MoonLabType labType)
+    public void RemoveLabAtCrater(MoonCraterZone crater)
+    {
+        if (crater == null)
+            return;
+
+        if (!crater.IsOccupied)
+        {
+            GameLogUI.Log("제거할 기지가 없습니다.");
+            return;
+        }
+
+        string removedName = GetLabName(crater.BuiltLabType);
+        crater.RemoveBuiltLab();
+        GameLogUI.Log($"{crater.CraterName}의 {removedName} 제거 완료");
+        RefreshConstructionUI();
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SaveGame();
+    }
+
+    public bool HasPurchased(MoonLabType labType)
+    {
+        switch (labType)
+        {
+            case MoonLabType.RoverBase: return hasRoverBase;
+            case MoonLabType.RareEarthMine: return hasRareEarthMine;
+            case MoonLabType.PlantDome: return hasPlantDome;
+            case MoonLabType.SpaceTelescope: return hasSpaceTelescope;
+            default: return false;
+        }
+    }
+
+    private void SetPurchased(MoonLabType labType, bool value)
     {
         switch (labType)
         {
             case MoonLabType.RoverBase:
-                return roverBasePrefab;
-
+                hasRoverBase = value;
+                break;
             case MoonLabType.RareEarthMine:
-                return rareEarthMinePrefab;
-
+                hasRareEarthMine = value;
+                break;
             case MoonLabType.PlantDome:
-                return plantDomePrefab;
-
+                hasPlantDome = value;
+                break;
             case MoonLabType.SpaceTelescope:
-                return spaceTelescopePrefab;
-
-            default:
-                return null;
+                hasSpaceTelescope = value;
+                break;
         }
     }
 
@@ -202,144 +275,128 @@ public class MoonBuildManager : MonoBehaviour
     {
         switch (labType)
         {
-            case MoonLabType.RoverBase:
-                return roverBaseCost;
-
-            case MoonLabType.RareEarthMine:
-                return rareEarthMineCost;
-
-            case MoonLabType.PlantDome:
-                return plantDomeCost;
-
-            case MoonLabType.SpaceTelescope:
-                return spaceTelescopeCost;
-
-            default:
-                return 0;
+            case MoonLabType.RoverBase: return roverBaseCost;
+            case MoonLabType.RareEarthMine: return rareEarthMineCost;
+            case MoonLabType.PlantDome: return plantDomeCost;
+            case MoonLabType.SpaceTelescope: return spaceTelescopeCost;
+            default: return 0;
         }
     }
 
-    private ResourceType GetCostType(MoonLabType labType)
+    private ResourceType GetCostResourceType(MoonLabType labType)
     {
         switch (labType)
         {
-            case MoonLabType.RoverBase:
-                return ResourceType.Physics;
-
-            case MoonLabType.RareEarthMine:
-                return ResourceType.Earth;
-
-            case MoonLabType.PlantDome:
-                return ResourceType.Biology;
-
-            case MoonLabType.SpaceTelescope:
-                return ResourceType.Chemistry;
-
-            default:
-                return ResourceType.Physics;
+            case MoonLabType.RoverBase: return ResourceType.Physics;
+            case MoonLabType.RareEarthMine: return ResourceType.Earth;
+            case MoonLabType.PlantDome: return ResourceType.Biology;
+            case MoonLabType.SpaceTelescope: return ResourceType.Chemistry;
+            default: return ResourceType.Physics;
         }
     }
 
-    private bool HasPurchasedLab(MoonLabType labType)
+    private GameObject GetPrefab(MoonLabType labType)
     {
         switch (labType)
         {
-            case MoonLabType.RoverBase:
-                return hasRoverBase;
-
-            case MoonLabType.RareEarthMine:
-                return hasRareEarthMine;
-
-            case MoonLabType.PlantDome:
-                return hasPlantDome;
-
-            case MoonLabType.SpaceTelescope:
-                return hasSpaceTelescope;
-
-            default:
-                return false;
+            case MoonLabType.RoverBase: return roverBasePrefab;
+            case MoonLabType.RareEarthMine: return rareEarthMinePrefab;
+            case MoonLabType.PlantDome: return plantDomePrefab;
+            case MoonLabType.SpaceTelescope: return spaceTelescopePrefab;
+            default: return null;
         }
     }
 
-    private void SetPurchasedLab(MoonLabType labType, bool purchased)
+    public string GetLabName(MoonLabType labType)
     {
         switch (labType)
         {
-            case MoonLabType.RoverBase:
-                hasRoverBase = purchased;
-                break;
-
-            case MoonLabType.RareEarthMine:
-                hasRareEarthMine = purchased;
-                break;
-
-            case MoonLabType.PlantDome:
-                hasPlantDome = purchased;
-                break;
-
-            case MoonLabType.SpaceTelescope:
-                hasSpaceTelescope = purchased;
-                break;
+            case MoonLabType.RoverBase: return "월면차 기지";
+            case MoonLabType.RareEarthMine: return "희토류 기지";
+            case MoonLabType.PlantDome: return "우주 식물 돔";
+            case MoonLabType.SpaceTelescope: return "우주 망원경";
+            default: return "없음";
         }
     }
 
-    private string GetLabDisplayName(MoonLabType labType)
+    public void WriteSaveData(SaveData data)
     {
-        switch (labType)
+        data.hasRoverBase = hasRoverBase;
+        data.hasRareEarthMine = hasRareEarthMine;
+        data.hasPlantDome = hasPlantDome;
+        data.hasSpaceTelescope = hasSpaceTelescope;
+        data.craterStates.Clear();
+
+        MoonCraterZone[] craters = craterZones != null && craterZones.Length > 0
+            ? craterZones
+            : FindObjectsByType<MoonCraterZone>(FindObjectsSortMode.None);
+
+        foreach (MoonCraterZone crater in craters)
         {
-            case MoonLabType.RoverBase:
-                return "탐사 로버 기지";
+            if (crater == null) continue;
 
-            case MoonLabType.RareEarthMine:
-                return "희토류 채굴장";
+            CraterSaveData craterData = new CraterSaveData
+            {
+                craterName = crater.CraterName,
+                isDiscovered = crater.IsDiscovered,
+                isOccupied = crater.IsOccupied,
+                builtLabType = crater.BuiltLabType
+            };
 
-            case MoonLabType.PlantDome:
-                return "식물 돔";
-
-            case MoonLabType.SpaceTelescope:
-                return "우주 망원경";
-
-            default:
-                return "달 연구 시설";
+            data.craterStates.Add(craterData);
         }
     }
 
-    private void UpdateBuildUI()
+    public void LoadSaveData(SaveData data)
     {
-        if (currentCraterText != null)
+        hasRoverBase = data.hasRoverBase;
+        hasRareEarthMine = data.hasRareEarthMine;
+        hasPlantDome = data.hasPlantDome;
+        hasSpaceTelescope = data.hasSpaceTelescope;
+
+        foreach (CraterSaveData craterData in data.craterStates)
         {
-            if (currentCrater != null)
-                currentCraterText.text = $"{currentCrater.craterName}\n건설 가능";
-            else
-                currentCraterText.text = "크레이터를 선택하세요";
+            MoonCraterZone crater = FindCraterByName(craterData.craterName);
+            if (crater == null) continue;
+
+            crater.LoadState(craterData.isDiscovered, false, MoonLabType.None);
+
+            if (craterData.isDiscovered && !discoveredCraters.Contains(crater))
+                discoveredCraters.Add(crater);
+
+            if (craterData.isOccupied)
+                RebuildLabFromSave(crater, craterData.builtLabType);
         }
 
-        SetBuildButtonState(roverBaseBuildButton, MoonLabType.RoverBase);
-        SetBuildButtonState(rareEarthMineBuildButton, MoonLabType.RareEarthMine);
-        SetBuildButtonState(plantDomeBuildButton, MoonLabType.PlantDome);
-        SetBuildButtonState(spaceTelescopeBuildButton, MoonLabType.SpaceTelescope);
+        RefreshConstructionUI();
+        UpdateOpenConstructionButton();
     }
 
-    private void SetBuildPanelVisible(bool visible)
+    private MoonCraterZone FindCraterByName(string craterName)
     {
-        if (buildPanel != null)
-            buildPanel.SetActive(visible);
+        MoonCraterZone[] craters = craterZones != null && craterZones.Length > 0
+            ? craterZones
+            : FindObjectsByType<MoonCraterZone>(FindObjectsSortMode.None);
+
+        foreach (MoonCraterZone crater in craters)
+        {
+            if (crater != null && crater.CraterName == craterName)
+                return crater;
+        }
+
+        return null;
     }
 
-    private void SetBuildButtonState(Button button, MoonLabType labType)
+    private void RebuildLabFromSave(MoonCraterZone crater, MoonLabType labType)
     {
-        if (button == null)
+        if (crater == null || labType == MoonLabType.None)
             return;
 
-        button.interactable = CanBuildLab(labType);
-    }
+        GameObject prefab = GetPrefab(labType);
+        if (prefab == null)
+            return;
 
-    private bool CanBuildLab(MoonLabType labType)
-    {
-        return currentCrater != null &&
-               currentCrater.IsBuildable &&
-               !currentCrater.IsOccupied &&
-               HasPurchasedLab(labType) &&
-               GetPrefab(labType) != null;
+        GameObject labObject = Instantiate(prefab, crater.GetBuildPosition(), Quaternion.identity);
+        crater.SetBuiltLabFromSave(labType, labObject);
     }
 }

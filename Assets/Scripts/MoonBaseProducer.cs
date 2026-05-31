@@ -7,12 +7,26 @@ public class MoonBaseProducer : MonoBehaviour
     public int productionAmount = 2;
     public float productionInterval = 5f;
 
+    [Header("로그 설정")]
+    [SerializeField] private bool logProduction = false;
+
+    private Coroutine produceRoutine;
     private WaitForSeconds productionWait;
 
-    private void Start()
+    private void OnEnable()
     {
-        productionWait = new WaitForSeconds(productionInterval);
-        StartCoroutine(ProduceRoutine());
+        productionWait = new WaitForSeconds(Mathf.Max(0.25f, productionInterval));
+        produceRoutine = StartCoroutine(ProduceRoutine());
+        GameLogUI.Log($"{ResourceManager.GetResourceName(resourceType)} 생산 기지 가동 시작");
+    }
+
+    private void OnDisable()
+    {
+        if (produceRoutine != null)
+        {
+            StopCoroutine(produceRoutine);
+            produceRoutine = null;
+        }
     }
 
     private IEnumerator ProduceRoutine()
@@ -24,6 +38,9 @@ public class MoonBaseProducer : MonoBehaviour
             if (ResourceManager.Instance != null)
             {
                 ResourceManager.Instance.AddResource(resourceType, productionAmount);
+
+                if (logProduction)
+                    GameLogUI.Log($"{ResourceManager.GetResourceName(resourceType)} 자동 생산 +{productionAmount}");
             }
         }
     }

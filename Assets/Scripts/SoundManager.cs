@@ -12,13 +12,13 @@ public class SoundManager : MonoBehaviour
     {
         if (sfxSource == null)
         {
-            Debug.LogWarning("SFX AudioSource가 연결되지 않았습니다.");
+            GameLogUI.Warning("SFX AudioSource가 연결되지 않았습니다.");
             return;
         }
 
         if (buttonClickClip == null)
         {
-            Debug.LogWarning("Button Click AudioClip이 연결되지 않았습니다.");
+            GameLogUI.Warning("Button Click AudioClip이 연결되지 않았습니다.");
             return;
         }
 

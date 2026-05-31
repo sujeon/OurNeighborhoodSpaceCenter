@@ -14,6 +14,11 @@ public class UpgradeManager : MonoBehaviour
     public static int BonusAmount = 0;
     public static bool IsMoonUnlocked = false;
 
+    [Header("대포 기본값")]
+    [SerializeField] private float baseMaxForce = 10f;
+    [SerializeField] private int baseTrajectoryStepCount = 50;
+    [SerializeField] private float baseTrajectoryTimeStep = 0.05f;
+
     [Header("현재 적용 중인 배율")]
     [SerializeField] private float projectileGravityScale = 1.0f;
     [SerializeField] private float bioSpeedMultiplier = 1.0f;
@@ -72,79 +77,133 @@ public class UpgradeManager : MonoBehaviour
 
     private void Start()
     {
-        if (resManager == null) resManager = ResourceManager.Instance;
+        EnsureResourceManager();
+        ApplyUpgradeToLauncher(launcher);
         UpdateUpgradeUI();
+    }
+
+    private void EnsureResourceManager()
+    {
+        if (resManager == null)
+            resManager = ResourceManager.Instance;
+    }
+
+    public void ApplyUpgradeToLauncher(ProjectileLauncher targetLauncher)
+    {
+        if (targetLauncher == null) return;
+
+        launcher = targetLauncher;
+        launcher.maxForce = baseMaxForce + ((rangeLevel - 1) * 5f);
+        launcher.trajectoryStepCount = Mathf.Min(200, baseTrajectoryStepCount + ((trajectoryLevel - 1) * 10));
+        launcher.timeStep = Mathf.Max(0.035f, baseTrajectoryTimeStep - ((trajectoryLevel - 1) * 0.002f));
+
+        if (launcher.powerSlider != null)
+            launcher.powerSlider.maxValue = launcher.maxForce;
     }
 
     public void UpgradeMaxPower()
     {
-        if (resManager == null || launcher == null) return;
-        if (!resManager.SpendPair(ResourceType.Physics, powerCostPhys, ResourceType.Earth, powerCostEarth)) return;
+        EnsureResourceManager();
+        if (resManager == null || launcher == null)
+        {
+            GameLogUI.Warning("업그레이드 실패: 대포 또는 자원 매니저 연결이 없습니다.");
+            return;
+        }
+
+        if (!resManager.SpendPair(ResourceType.Physics, powerCostPhys, ResourceType.Earth, powerCostEarth))
+            return;
 
         rangeLevel++;
-        launcher.maxForce += 5f;
+        ApplyUpgradeToLauncher(launcher);
         powerCostPhys = ScaleCost(powerCostPhys, 1.5f);
         powerCostEarth = ScaleCost(powerCostEarth, 1.5f);
-        FinishUpgrade();
+
+        FinishUpgrade("대포 최대 파워", rangeLevel);
     }
 
     public void UpgradeWeight()
     {
-        if (resManager == null) return;
-        if (!resManager.SpendPair(ResourceType.Chemistry, weightCostChem, ResourceType.Physics, weightCostPhys)) return;
+        EnsureResourceManager();
+        if (resManager == null)
+        {
+            GameLogUI.Warning("업그레이드 실패: 자원 매니저 연결이 없습니다.");
+            return;
+        }
+
+        if (!resManager.SpendPair(ResourceType.Chemistry, weightCostChem, ResourceType.Physics, weightCostPhys))
+            return;
 
         weightLevel++;
-
-        // 질량만 줄이면 체감이 약할 수 있어서, 발사체가 받는 중력 배율도 조금씩 낮춥니다.
         ProjectileMass = Mathf.Max(0.4f, 1.0f - ((weightLevel - 1) * 0.05f));
         projectileGravityScale = Mathf.Max(0.55f, 1.0f - ((weightLevel - 1) * 0.04f));
-
         weightCostChem = ScaleCost(weightCostChem, 1.6f);
         weightCostPhys = ScaleCost(weightCostPhys, 1.4f);
-        FinishUpgrade();
+
+        FinishUpgrade("관측 장비 경량화", weightLevel);
     }
 
     public void UpgradeTrajectory()
     {
-        if (resManager == null || launcher == null) return;
-        if (!resManager.SpendPair(ResourceType.Earth, trajectoryCostEarth, ResourceType.Chemistry, trajectoryCostChem)) return;
+        EnsureResourceManager();
+        if (resManager == null || launcher == null)
+        {
+            GameLogUI.Warning("업그레이드 실패: 대포 또는 자원 매니저 연결이 없습니다.");
+            return;
+        }
+
+        if (!resManager.SpendPair(ResourceType.Earth, trajectoryCostEarth, ResourceType.Chemistry, trajectoryCostChem))
+            return;
 
         trajectoryLevel++;
-        launcher.trajectoryStepCount = Mathf.Min(200, launcher.trajectoryStepCount + 10);
-        launcher.timeStep = Mathf.Max(0.035f, launcher.timeStep - 0.002f);
-
+        ApplyUpgradeToLauncher(launcher);
         trajectoryCostEarth = ScaleCost(trajectoryCostEarth, 1.5f);
         trajectoryCostChem = ScaleCost(trajectoryCostChem, 1.5f);
-        FinishUpgrade();
+
+        FinishUpgrade("궤적 예측 장비", trajectoryLevel);
     }
 
     public void UpgradeScoreEfficiency()
     {
-        if (resManager == null) return;
-        if (!resManager.SpendPair(ResourceType.Physics, scoreCostPhys, ResourceType.Earth, scoreCostEarth)) return;
+        EnsureResourceManager();
+        if (resManager == null)
+        {
+            GameLogUI.Warning("업그레이드 실패: 자원 매니저 연결이 없습니다.");
+            return;
+        }
+
+        if (!resManager.SpendPair(ResourceType.Physics, scoreCostPhys, ResourceType.Earth, scoreCostEarth))
+            return;
 
         scoreLevel++;
         BonusAmount += 2;
         scoreCostPhys = ScaleCost(scoreCostPhys, 1.7f);
         scoreCostEarth = ScaleCost(scoreCostEarth, 1.7f);
-        FinishUpgrade();
+
+        FinishUpgrade("포인트 효율", scoreLevel);
     }
 
     public void UpgradeBioSpeed()
     {
-        if (resManager == null) return;
-        if (!resManager.Spend(ResourceType.Biology, bioCostBio)) return;
+        EnsureResourceManager();
+        if (resManager == null)
+        {
+            GameLogUI.Warning("업그레이드 실패: 자원 매니저 연결이 없습니다.");
+            return;
+        }
+
+        if (!resManager.Spend(ResourceType.Biology, bioCostBio))
+            return;
 
         bioLevel++;
         bioSpeedMultiplier = Mathf.Max(0.25f, 1.0f - ((bioLevel - 1) * 0.1f));
         bioCostBio = ScaleCost(bioCostBio, 1.8f);
-        FinishUpgrade();
+
+        FinishUpgrade("자원 생산 속도", bioLevel);
     }
+
     public bool CanLaunchToMoon()
     {
-        if (resManager == null)
-            resManager = ResourceManager.Instance;
-
+        EnsureResourceManager();
         if (resManager == null)
             return false;
 
@@ -161,6 +220,33 @@ public class UpgradeManager : MonoBehaviour
         return hasRequiredLevels && hasEnoughResources;
     }
 
+    public bool TryConsumeMoonLaunchCost()
+    {
+        EnsureResourceManager();
+
+        if (!CanLaunchToMoon())
+        {
+            GameLogUI.Log("달 발사 조건이 부족합니다.");
+            return false;
+        }
+
+        bool success = resManager.SpendAllTypes(moonCostAll);
+
+        if (success)
+        {
+            IsMoonUnlocked = true;
+            UpdateUpgradeUI();
+            GameLogUI.Log($"달 발사 비용으로 모든 자원 {moonCostAll}개를 사용했습니다.");
+            StageMoveManager stageMoveManager = FindFirstObjectByType<StageMoveManager>();
+                if (stageMoveManager != null)
+                {
+                    stageMoveManager.UpdateButtons();
+                }
+        }
+
+        return success;
+    }
+
     public void UpgradeUnlockMoon()
     {
         if (CanLaunchToMoon())
@@ -168,56 +254,59 @@ public class UpgradeManager : MonoBehaviour
             if (missionPopup != null)
                 missionPopup.SetActive(true);
 
-            Debug.Log("달 발사 조건 만족! 대포를 90도로 맞추고 최대 힘으로 발사하세요.");
+            GameLogUI.Log("달 발사 조건 만족! 각도 90도와 최대 힘으로 발사하세요.");
         }
         else
         {
-            Debug.Log("아직 달 발사 조건이 부족합니다.");
+            GameLogUI.Log($"달 발사 조건 부족: 파워 Lv.{reqRangeLevelForMoon}, 경량화 Lv.{reqWeightLevelForMoon}, 모든 자원 {moonCostAll}개 필요");
         }
 
         UpdateUpgradeUI();
     }
-
 
     private int ScaleCost(int currentCost, float multiplier)
     {
         return Mathf.Max(currentCost + 1, Mathf.RoundToInt(currentCost * multiplier));
     }
 
-    private void FinishUpgrade()
+    private void FinishUpgrade(string upgradeName, int newLevel)
     {
-        if (resManager != null) resManager.UpdateUI();
+        if (resManager != null)
+            resManager.UpdateUI();
+
         UpdateUpgradeUI();
+        GameLogUI.Log($"{upgradeName} 업그레이드 완료! Lv.{newLevel}");
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SaveGame();
     }
 
     public void UpdateUpgradeUI()
     {
-        SetText(powerText, rangeLevel, $"물리:{powerCostPhys} / 지구:{powerCostEarth}");
-        SetText(weightText, weightLevel, $"화학:{weightCostChem} / 물리:{weightCostPhys}\n중력:{projectileGravityScale:0.00}x");
-        SetText(trajectoryText, trajectoryLevel, $"지구:{trajectoryCostEarth} / 화학:{trajectoryCostChem}");
-        SetText(scoreText, scoreLevel, $"물리:{scoreCostPhys} / 지구:{scoreCostEarth}");
-        SetText(bioText, bioLevel, $"생물:{bioCostBio}\n속도:{1f / bioSpeedMultiplier:0.0}x");
+        if (powerText != null)
+            powerText.text = $"Lv.{rangeLevel}\n물리 {powerCostPhys} / 지구 {powerCostEarth}";
+
+        if (weightText != null)
+            weightText.text = $"Lv.{weightLevel}\n화학 {weightCostChem} / 물리 {weightCostPhys}";
+
+        if (trajectoryText != null)
+            trajectoryText.text = $"Lv.{trajectoryLevel}\n지구 {trajectoryCostEarth} / 화학 {trajectoryCostChem}";
+
+        if (scoreText != null)
+            scoreText.text = $"Lv.{scoreLevel}\n물리 {scoreCostPhys} / 지구 {scoreCostEarth}";
+
+        if (bioText != null)
+            bioText.text = $"Lv.{bioLevel}\n생물 {bioCostBio}";
 
         if (moonText != null)
         {
             if (CanLaunchToMoon())
-            {
-                moonText.text = $"달 발사 가능!\n각도 90도 + 최대 파워";
-            }
+                moonText.text = "달 발사 가능!\n90도 + 최대 파워";
             else
-            {
-                moonText.text =
-                    $"달 발사 조건\n" +
-                    $"파워 Lv.{reqRangeLevelForMoon}\n" +
-                    $"경량화 Lv.{reqWeightLevelForMoon}\n" +
-                    $"모든 자원 {moonCostAll}개";
-            }
+                moonText.text = $"파워 Lv.{reqRangeLevelForMoon}\n경량화 Lv.{reqWeightLevelForMoon}\n모든 자원 {moonCostAll}";
         }
-    }
 
-    private void SetText(TextMeshProUGUI tmp, int lv, string costs)
-    {
-        if (tmp == null) return;
-        tmp.text = $"<b>Lv.{lv}</b>\n<size=70%>{costs}</size>";
+        if (moonStageButton != null)
+            moonStageButton.interactable = CanLaunchToMoon();
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine.Tilemaps;
 
 public class PerlinTerrainGenerator : MonoBehaviour
 {
-   [Header("Tilemap")]
+    [Header("Tilemap")]
     [SerializeField] private Tilemap groundTilemap;
     [SerializeField] private TileBase groundTile;
     [SerializeField] private TileBase surfaceTile;
@@ -30,7 +30,7 @@ public class PerlinTerrainGenerator : MonoBehaviour
     {
         if (groundTilemap == null || groundTile == null)
         {
-            Debug.LogWarning("Tilemap 또는 Tile이 연결되지 않았습니다.");
+            GameLogUI.Warning("지형 생성 실패: Tilemap 또는 Tile이 연결되지 않았습니다.");
             return;
         }
 
@@ -53,7 +53,7 @@ public class PerlinTerrainGenerator : MonoBehaviour
             }
         }
 
-        Debug.Log("사이드뷰 지형 생성 완료");
+        GameLogUI.Log($"사이드뷰 지형 생성 완료: 폭 {mapWidth}");
     }
 
     private int CalculateHeight(int x)
@@ -62,9 +62,7 @@ public class PerlinTerrainGenerator : MonoBehaviour
         int height = Mathf.RoundToInt(noiseValue * heightMultiplier) + baseHeight;
 
         if (useCrater)
-        {
             height -= GetCraterDepthAtX(x);
-        }
 
         return Mathf.Max(1, height);
     }
@@ -72,13 +70,11 @@ public class PerlinTerrainGenerator : MonoBehaviour
     private int GetCraterDepthAtX(int x)
     {
         float distance = Mathf.Abs(x - craterCenterX);
-
         if (distance > craterRadius)
             return 0;
 
         float normalizedDistance = distance / craterRadius;
         float craterCurve = 1f - normalizedDistance * normalizedDistance;
-
         return Mathf.RoundToInt(craterCurve * craterDepth);
     }
 
@@ -95,7 +91,6 @@ public class PerlinTerrainGenerator : MonoBehaviour
         int height = GetHeightAtX(x);
         Vector3Int cellPosition = new Vector3Int(x, height, 0);
         Vector3 worldPosition = groundTilemap.CellToWorld(cellPosition);
-
         return worldPosition + new Vector3(0.5f, yOffset, 0f);
     }
 }

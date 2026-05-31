@@ -7,6 +7,9 @@ public class LabGenerator : MonoBehaviour
     public float baseProductionInterval = 5f;
     public int productionAmount = 1;
 
+    [Header("로그 설정")]
+    [SerializeField] private bool logProduction = false;
+
     private bool isActivated;
     private Coroutine produceCoroutine;
 
@@ -14,13 +17,13 @@ public class LabGenerator : MonoBehaviour
     {
         if (isActivated)
         {
-            Debug.Log($"{resourceType} 연구소는 이미 가동 중입니다!");
+            GameLogUI.Log($"{ResourceManager.GetResourceName(resourceType)} 연구소는 이미 가동 중입니다.");
             return false;
         }
 
         isActivated = true;
         produceCoroutine = StartCoroutine(ProduceRoutine());
-        Debug.Log($"{resourceType} 연구소 가동 시작!");
+        GameLogUI.Log($"{ResourceManager.GetResourceName(resourceType)} 연구소 가동 시작!");
         return true;
     }
 
@@ -28,17 +31,19 @@ public class LabGenerator : MonoBehaviour
     {
         while (isActivated)
         {
-            float multiplier = UpgradeManager.Instance != null 
-                ? UpgradeManager.Instance.BioSpeedMultiplier 
+            float multiplier = UpgradeManager.Instance != null
+                ? UpgradeManager.Instance.BioSpeedMultiplier
                 : 1f;
 
             float interval = Mathf.Max(0.25f, baseProductionInterval * multiplier);
-
             yield return new WaitForSeconds(interval);
 
             if (ResourceManager.Instance != null)
             {
                 ResourceManager.Instance.AddResource(resourceType, productionAmount);
+
+                if (logProduction)
+                    GameLogUI.Log($"{ResourceManager.GetResourceName(resourceType)} 자동 생산 +{productionAmount}");
             }
         }
     }

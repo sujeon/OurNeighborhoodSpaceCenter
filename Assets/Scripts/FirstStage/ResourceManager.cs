@@ -27,7 +27,7 @@ public class ResourceManager : MonoBehaviour
 
     private void Awake()
     {
-            if (Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
@@ -49,15 +49,27 @@ public class ResourceManager : MonoBehaviour
 
     public bool Spend(ResourceType type, int amount)
     {
-        if (!CanSpend(type, amount)) return false;
+        if (amount <= 0)
+            return true;
+
+        if (GetResource(type) < amount)
+        {
+            GameLogUI.Log($"{GetResourceName(type)} 자원이 부족합니다. 필요: {amount}, 보유: {GetResource(type)}");
+            return false;
+        }
 
         AddResource(type, -amount, false);
+        UpdateUI();
         return true;
     }
 
     public bool SpendPair(ResourceType firstType, int firstAmount, ResourceType secondType, int secondAmount)
     {
-        if (!CanSpend(firstType, firstAmount) || !CanSpend(secondType, secondAmount)) return false;
+        if (!CanSpend(firstType, firstAmount) || !CanSpend(secondType, secondAmount))
+        {
+            GameLogUI.Log($"자원이 부족합니다. {GetResourceName(firstType)} {firstAmount}, {GetResourceName(secondType)} {secondAmount} 필요");
+            return false;
+        }
 
         AddResource(firstType, -firstAmount, false);
         AddResource(secondType, -secondAmount, false);
@@ -69,6 +81,7 @@ public class ResourceManager : MonoBehaviour
     {
         if (physicsRes < amount || chemistryRes < amount || biologyRes < amount || earthRes < amount)
         {
+            GameLogUI.Log($"모든 자원이 {amount}개 이상 필요합니다.");
             return false;
         }
 
@@ -98,7 +111,8 @@ public class ResourceManager : MonoBehaviour
                 break;
         }
 
-        if (updateUI) UpdateUI();
+        if (updateUI)
+            UpdateUI();
     }
 
     public void AddResource(string type, int amount)
@@ -108,10 +122,10 @@ public class ResourceManager : MonoBehaviour
 
     public void AddAllResources(int amount)
     {
-        physicsRes += amount;
-        chemistryRes += amount;
-        biologyRes += amount;
-        earthRes += amount; 
+        physicsRes = Mathf.Max(0, physicsRes + amount);
+        chemistryRes = Mathf.Max(0, chemistryRes + amount);
+        biologyRes = Mathf.Max(0, biologyRes + amount);
+        earthRes = Mathf.Max(0, earthRes + amount);
         UpdateUI();
     }
 
@@ -135,13 +149,25 @@ public class ResourceManager : MonoBehaviour
         if (earthText != null) earthText.text = earthRes.ToString();
     }
 
+    public static string GetResourceName(ResourceType type)
+    {
+        switch (type)
+        {
+            case ResourceType.Physics: return "물리";
+            case ResourceType.Chemistry: return "화학";
+            case ResourceType.Biology: return "생물";
+            case ResourceType.Earth: return "지구";
+            default: return "자원";
+        }
+    }
+
     public static ResourceType StringToResourceType(string type)
     {
         if (string.IsNullOrEmpty(type)) return ResourceType.Physics;
 
-        if (type.Contains("Chemistry")) return ResourceType.Chemistry;
-        if (type.Contains("Biology")) return ResourceType.Biology;
-        if (type.Contains("Earth")) return ResourceType.Earth;
+        if (type.Contains("Chemistry") || type.Contains("Chemical") || type.Contains("화학")) return ResourceType.Chemistry;
+        if (type.Contains("Biology") || type.Contains("생물")) return ResourceType.Biology;
+        if (type.Contains("Earth") || type.Contains("지구")) return ResourceType.Earth;
         return ResourceType.Physics;
     }
 

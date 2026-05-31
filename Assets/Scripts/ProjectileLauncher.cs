@@ -66,7 +66,12 @@ public class ProjectileLauncher : MonoBehaviour
     private void Start()
     {
         SetupSlider();
-        SetLineVisible(false);
+    SetLineVisible(false);
+
+    if (UpgradeManager.Instance != null)
+    {
+        UpgradeManager.Instance.launcher = this;
+    }
         CreateTrajectoryDots();
     }
 

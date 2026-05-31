@@ -101,6 +101,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7556168013887217672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 309fea08462ea31439428b3be54636a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 70aba450b1d306940a94be4a5222c9dd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoonBase_Chemical
+  m_EditorClassIdentifier: Assembly-CSharp::MoonBaseProducer
+  resourceType: 1
+  productionAmount: 2
+  productionInterval: 5

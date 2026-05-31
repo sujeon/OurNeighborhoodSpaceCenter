@@ -1,13 +1,17 @@
 using UnityEngine;
 using System.Collections;
-public class MoonBase_Earth : MonoBehaviour
+
+public class MoonBaseProducer : MonoBehaviour
 {
-    public ResourceType resourceType = ResourceType.Earth;
+    public ResourceType resourceType = ResourceType.Physics;
     public int productionAmount = 2;
     public float productionInterval = 5f;
 
+    private WaitForSeconds productionWait;
+
     private void Start()
     {
+        productionWait = new WaitForSeconds(productionInterval);
         StartCoroutine(ProduceRoutine());
     }
 
@@ -15,7 +19,7 @@ public class MoonBase_Earth : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(productionInterval);
+            yield return productionWait;
 
             if (ResourceManager.Instance != null)
             {

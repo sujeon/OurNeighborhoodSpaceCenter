@@ -104,3 +104,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70aba450b1d306940a94be4a5222c9dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoonBaseProducer
+  resourceType: 3
+  productionAmount: 2
+  productionInterval: 5

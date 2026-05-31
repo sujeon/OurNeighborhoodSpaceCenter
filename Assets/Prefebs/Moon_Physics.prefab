@@ -101,9 +101,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3901251333572696903}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7d21be0fcdcb144482f0b5777d6791b, type: 3}
+  m_Script: {fileID: 11500000, guid: 70aba450b1d306940a94be4a5222c9dd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoonBase_Physics
+  m_EditorClassIdentifier: Assembly-CSharp::MoonBaseProducer
   resourceType: 0
   productionAmount: 2
   productionInterval: 5
